@@ -13,22 +13,25 @@ pc.createOffer(setLocalAndSendMessage, onCreateSessionDescriptionError);
 
 
 function iceCandidateType(candidateSDP) {
-    if (candidateSDP.indexOf("typ relay ") >= 0)
+    if (candidateSDP.indexOf("typ relay ") >= 0) {
 	return "TURN";
-    if (candidateSDP.indexOf("typ srflx ") >= 0)
+    }
+    if (candidateSDP.indexOf("typ srflx ") >= 0) {
 	return "STUN";
-    if (candidateSDP.indexOf("typ host ") >= 0)
+    }
+    if (candidateSDP.indexOf("typ host ") >= 0) {
 	return "HOST";
+    }
     return "UNKNOWN";
 }
 
 function onIceCandidate(event) {//RTCIceCandidateEvent
     console.log("+onIceCandidate("+event+","+event.candidate+") 00");
     if(!event.candidate) {
-	console.log("------------sdp----------\n")
-	    console.log(""+pc.localDescription.sdp);
-	console.log("------------sdp----------\n")
-	    }
+	console.log("------------sdp----------\n");
+	console.log(""+pc.localDescription.sdp);
+	console.log("------------sdp----------\n");
+    }
 }
 
 function onRemoteStreamAdded(event) {
