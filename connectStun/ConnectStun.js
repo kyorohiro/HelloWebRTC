@@ -30,6 +30,8 @@ function onIceCandidate(event) {//RTCIceCandidateEvent
     if(!event.candidate) {
 	console.log("------------sdp----------\n");
 	console.log(""+pc.localDescription.sdp);
+	var t = document.getElementById("sdp");
+	t.value = pc.localDescription.sdp;
 	console.log("------------sdp----------\n");
     }
 }
