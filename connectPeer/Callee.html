@@ -1,14 +1,13 @@
 <html>
 <head>
-<title>WebRTC Caller</title>
-<script src="Caller.js"></script>
+<title>WebRTC Callee</title>
+<script src="Callee.js"></script>
 <script type="text/javascript">
 <!--
 function OnStart() {
    var c = new Caller();
-   c.setLocalSDP(document.getElementById("local_sdp"));
    c.createPeerConnection();
-   c.createOffer();
+   c.createAnswer();
 }
 //-->
 </script>
@@ -18,16 +17,16 @@ function OnStart() {
 
 </div>
 
-<label>local sdp<br>
+<label>local_sdp<br>
 <textarea id="local_sdp"></textarea>
 </label><br>
 
-<label>remote sdp<br>
+<label>remote_sdp<br>
 <textarea id="remote_sdp"></textarea>
 </label><br>
 
 <label>start to connect peer <br>
-<input type="button" value="createPeer/createOffer" onclick="OnStart();"/>
+<input type="button" value="createPeer/createAnswer" onclick="OnStart();"/>
 </label><br>
 
 

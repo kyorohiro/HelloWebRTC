@@ -4,11 +4,17 @@ function Caller() {
     this.pc = null;
     this.pcConfig = {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]};
     this.pcConstraints = {"optional": []};
+    this.mOutputLocalSDP = "";
 
     Caller.prototype.createPeerConnection = _createPeerConnection;
     Caller.prototype.createOffer = _createOffer;
+    Caller.prototype.setLocalSDP = _setLocalSDP;
     arguments.callee.iceType = _iceCandidateType;
 };
+
+function _setLocalSDP(output) {
+    this.mOutputLocalSDP = output;
+}
 
 function _createOffer() {
     var _pc = this.pc;
@@ -39,14 +45,15 @@ function _createPeerConnection() {
     try {
         console.log("+++create peer connection");
         this.pc = new webkitRTCPeerConnection(this.pcConfig, this.pcConstraints);
-	var _pc = this.pc;
+	var _own = this;
         this.pc.onicecandidate = function (event) {//RTCIceCandidateEvent
 	    console.log("+onIceCandidate("+event+","+event.candidate+") 00");
 	    if(!event.candidate) {
-		console.log("------------sdp-----"+Caller.iceType(_pc.localDescription.sdp)+"-----\n");
-		console.log(""+_pc.localDescription.sdp);
-		var t = document.getElementById("sdp");
-		t.value = _pc.localDescription.sdp;
+		console.log("------------sdp-----"+Caller.iceType(_own.pc.localDescription.sdp)+"-----\n");
+		console.log(""+_own.pc.localDescription.sdp);
+		//var t = document.getElementById("sdp");
+		//t.value = _pc.localDescription.sdp;
+		_own.mOutputLocalSDP.value = _own.pc.localDescription.sdp;
 		console.log("------------sdp----------\n");
 	    }
 	};
