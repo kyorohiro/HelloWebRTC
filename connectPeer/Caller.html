@@ -1,0 +1,34 @@
+<html>
+<head>
+<title>WebRTC Caller</title>
+<script src="Caller.js"></script>
+<script type="text/javascript">
+<!--
+function OnStart() {
+   var c = new Caller();
+   c.createPeerConnection();
+   c.createOffer();
+}
+//-->
+</script>
+</head>
+<body>
+<div>
+
+</div>
+
+<label>offer sdp<br>
+<textarea id="sdp"></textarea>
+</label><br>
+
+<label>answer sdp<br>
+<textarea id="answerSdp"></textarea>
+</label><br>
+
+<label>start to connect peer <br>
+<input type="button" value="createPeer/createOffer" onclick="OnStart();"/>
+</label><br>
+
+
+</body>
+</html>
