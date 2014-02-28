@@ -3,17 +3,34 @@
 function Caller() {
     this.pc = null;
     this.pcConfig = {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]};
-    this.pcConstraints = {"optional": []};
+    this.pcConstraints = { 'optional': [{'DtlsSrtpKeyAgreement': true}, {'RtpDataChannels': true }] };
     this.mOutputLocalSDP = "";
     this.mOutputRemoteSDP = "";
+    this.mDataChannel = null;
 
     Caller.prototype.createPeerConnection = _createPeerConnection;
     Caller.prototype.createOffer = _createOffer;
     Caller.prototype.createAnswer = _createAnswer;
     Caller.prototype.setOutputLocalSDP = _setLocalSDP;
     Caller.prototype.setOutputRemoteSDP = _setRemoteSDP;
+    Caller.prototype.sendHello = _sendHello;
+    Caller.prototype.setRemoteSDP = __setRemoteSDP;
+
     arguments.callee.iceType = _iceCandidateType;
 };
+
+function __setRemoteSDP() {
+    console.log("+++setRemoteSDP()"+this.mOutputRemoteSDP.value+"\n");
+    var sd = new RTCSessionDescription();
+    sd.type = "answer";
+    sd.sdp = this.mOutputRemoteSDP.value;
+    this.pc.setRemoteDescription(sd);
+}
+
+function _sendHello() {
+    console.log("+++sendHello()\n");
+    this.mDataChannel.send("hello");
+}
 
 function _setLocalSDP(output) {
     this.mOutputLocalSDP = output;
@@ -24,7 +41,7 @@ function _setRemoteSDP(output) {
 }
 
 function _createAnswer() {
-    console.log("+++createAnsert()\n");
+    console.log("+++createAnsert()"+this.mOutputRemoteSDP.value+"\n");
     var _own = this;
     var sd = new RTCSessionDescription();
     sd.type = "offer";
@@ -71,6 +88,19 @@ function _createPeerConnection() {
     try {
         console.log("+++create peer connection");
         this.pc = new webkitRTCPeerConnection(this.pcConfig, this.pcConstraints);
+	this.mDataChannel = this.pc.createDataChannel('channel',{});
+	this.mDataChannel.onmessage = function(event) {
+            console.log("onmessage:"+event);
+        };
+	this.mDataChannel.onopen = function(event) {
+            console.log("onopen:"+event);
+        };
+	this.mDataChannel.onerror = function(error) {
+            console.log("onerror:"+JSON.parse(error));
+        };
+	this.mDataChannel.onclose = function(error) {
+            console.log("onclose:"+JSON.parse(error));
+        };
 	var _own = this;
         this.pc.onicecandidate = function (event) {//RTCIceCandidateEvent
 	    console.log("+onIceCandidate("+event+","+event.candidate+") 00");
@@ -85,6 +115,9 @@ function _createPeerConnection() {
         this.pc.onremovestream = function (event) {console.log("+++onRemoteStreamRemoved("+event+"\n");};
         this.pc.onsignalingstatechange = function (event) {console.log("+++onSignalingChanged("+event+"\n");};
         this.pc.oniceconnectionstatechange = function (event) {console.log("+++onIceConnectionStateChanged("+event+"\n");};
+        this.pc.ondatachannel = function(event) {
+		console.log("--ondatachannel-\n");
+	};
     } catch (e) {
 	alert("can not create peer connection."+e+"");
     }

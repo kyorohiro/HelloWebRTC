@@ -4,6 +4,7 @@
 <script src="Caller.js"></script>
 <script type="text/javascript">
 <!--
+var c = null;
 function OnStart() {
    var remote_sdp = document.getElementById("remote_sdp");
    if(remote_sdp.value.length == 0) {
@@ -11,17 +12,21 @@ function OnStart() {
        return;
    }
 
-   var c = new Caller();
+   c = new Caller();
    c.setOutputLocalSDP(document.getElementById("local_sdp"));
    c.setOutputRemoteSDP(document.getElementById("remote_sdp"));
    c.createPeerConnection();
    c.createAnswer();
+}
+function OnSend() {
+    c.sendHello();
 }
 //-->
 </script>
 </head>
 <body>
 <div>
+
 
 </div>
 
@@ -35,6 +40,10 @@ function OnStart() {
 
 <label>start to connect peer <br>
 <input type="button" value="createPeer/createAnswer" onclick="OnStart();"/>
+</label><br>
+
+<label>send hello <br>
+<input type="button" value="send_hello" onclick="OnSend();"/>
 </label><br>
 
 </body>

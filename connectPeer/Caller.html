@@ -5,17 +5,25 @@
 <script type="text/javascript">
 
 <!--
+var c = null;
 function OnStart() {
-   var c = new Caller();
+   c = new Caller();
    c.setOutputLocalSDP(document.getElementById("local_sdp"));
+   c.setOutputRemoteSDP(document.getElementById("remote_sdp"));
    c.createPeerConnection();
    c.createOffer();
+}
+
+function OnSet() {
+   c.setRemoteSDP();
 }
 //-->
 </script>
 </head>
 <body>
 <div>
+1. push createPeer button on caller.html
+2. copy local sdp to remote_sdp on caller.html
 
 </div>
 
@@ -29,6 +37,10 @@ function OnStart() {
 
 <label>start to connect peer <br>
 <input type="button" value="createPeer/createOffer" onclick="OnStart();"/>
+</label><br>
+
+<label>set remote sdp<br>
+<input type="button" value="set remote sdp" onclick="OnSet();"/>
 </label><br>
 
 
