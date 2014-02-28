@@ -24,7 +24,7 @@ function OnSend() {
 //-->
 </script>
 </head>
-<body>
+<body bgcolor="#FFAAAA">
 <div>
 
 
@@ -38,13 +38,27 @@ function OnSend() {
 <textarea id="remote_sdp"></textarea>
 </label><br>
 
-<label>start to connect peer <br>
+<h2>[How to use this sample]</h2>
+<h4>1. push createPeer/createOffer button on caller.html</h4>
+
+<h4>2. copy "local sdp value on caller.html" to "remote_sdp on callee.html"</h4>
+
+
+<h4>3. push "createPeer/createAnswer button" on callee.html</h4>
+<label>
 <input type="button" value="createPeer/createAnswer" onclick="OnStart();"/>
 </label><br>
 
+
+<h4>4. copy "local sdp value on callee.html" to "remote_sdp on caller.html"</h4>
+
+<h4>5. push "set remote sdp button" on caller.html</h4>
+
+<h4>6. push "send hello button" on callee.html</h4>
 <label>send hello <br>
 <input type="button" value="send_hello" onclick="OnSend();"/>
 </label><br>
+
 
 </body>
 </html>

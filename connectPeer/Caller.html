@@ -20,7 +20,7 @@ function OnSet() {
 //-->
 </script>
 </head>
-<body>
+<body bgcolor="#AAFFAA">
 
 <label>local sdp<br>
 <textarea id="local_sdp"></textarea>
@@ -31,7 +31,7 @@ function OnSet() {
 </label><br>
 
 <h2>[How to use this sample]</h2>
-<h4>1. push createPeer button on caller.html</h4>
+<h4>1. push createPeer/createOffer button on caller.html</h4>
 
 <label>
 <input type="button" value="createPeer/createOffer" onclick="OnStart();"/>
@@ -45,12 +45,12 @@ function OnSet() {
 
 <h4>4. copy "local sdp value on callee.html" to "remote_sdp on caller.html"</h4>
 
-<h4>6. push "set remote sdp button" on caller.html</h4>
+<h4>5. push "set remote sdp button" on caller.html</h4>
 <label>
 <input type="button" value="set remote sdp" onclick="OnSet();"/>
 </label><br>
 
-<h4>5. push "send hello button" on callee.html</h4>
+<h4>6. push "send hello button" on callee.html</h4>
 
 </body>
 </html>
