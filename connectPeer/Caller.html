@@ -15,17 +15,12 @@ function OnStart() {
 }
 
 function OnSet() {
-   c.setRemoteSDP();
+   c.setRemoteSDP("answer", document.getElementById("remote_sdp").value);
 }
 //-->
 </script>
 </head>
 <body>
-<div>
-1. push createPeer button on caller.html
-2. copy local sdp to remote_sdp on caller.html
-
-</div>
 
 <label>local sdp<br>
 <textarea id="local_sdp"></textarea>
@@ -35,14 +30,27 @@ function OnSet() {
 <textarea id="remote_sdp"></textarea>
 </label><br>
 
-<label>start to connect peer <br>
+<h2>[How to use this sample]</h2>
+<h4>1. push createPeer button on caller.html</h4>
+
+<label>
 <input type="button" value="createPeer/createOffer" onclick="OnStart();"/>
 </label><br>
 
-<label>set remote sdp<br>
+<h4>2. copy "local sdp value on caller.html" to "remote_sdp on callee.html"</h4>
+
+
+<h4>3. push "createPeer/createAnswer button" on callee.html</h4>
+
+
+<h4>4. copy "local sdp value on callee.html" to "remote_sdp on caller.html"</h4>
+
+<h4>6. push "set remote sdp button" on caller.html</h4>
+<label>
 <input type="button" value="set remote sdp" onclick="OnSet();"/>
 </label><br>
 
+<h4>5. push "send hello button" on callee.html</h4>
 
 </body>
 </html>

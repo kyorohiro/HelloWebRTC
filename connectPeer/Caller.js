@@ -1,4 +1,5 @@
 
+
 // new Caller
 function Caller() {
     this.pc = null;
@@ -11,19 +12,19 @@ function Caller() {
     Caller.prototype.createPeerConnection = _createPeerConnection;
     Caller.prototype.createOffer = _createOffer;
     Caller.prototype.createAnswer = _createAnswer;
-    Caller.prototype.setOutputLocalSDP = _setLocalSDP;
-    Caller.prototype.setOutputRemoteSDP = _setRemoteSDP;
+    Caller.prototype.setOutputLocalSDP = _setLocalSDPBuffer;
+    Caller.prototype.setOutputRemoteSDP = _setRemoteSDPBuffer;
     Caller.prototype.sendHello = _sendHello;
-    Caller.prototype.setRemoteSDP = __setRemoteSDP;
+    Caller.prototype.setRemoteSDP = _setRemoteSDP;
 
     arguments.callee.iceType = _iceCandidateType;
 };
 
-function __setRemoteSDP() {
-    console.log("+++setRemoteSDP()"+this.mOutputRemoteSDP.value+"\n");
+function _setRemoteSDP(_type, _sdp) {
+    console.log("+++setRemoteSDP()"+_type+","+_sdp+"\n");
     var sd = new RTCSessionDescription();
-    sd.type = "answer";
-    sd.sdp = this.mOutputRemoteSDP.value;
+    sd.type = _type;
+    sd.sdp = _sdp;//othis.mOutputRemoteSDP.value;
     this.pc.setRemoteDescription(sd);
 }
 
@@ -32,11 +33,11 @@ function _sendHello() {
     this.mDataChannel.send("hello");
 }
 
-function _setLocalSDP(output) {
+function _setLocalSDPBuffer(output) {
     this.mOutputLocalSDP = output;
 }
 
-function _setRemoteSDP(output) {
+function _setRemoteSDPBuffer(output) {
     this.mOutputRemoteSDP = output;
 }
 
