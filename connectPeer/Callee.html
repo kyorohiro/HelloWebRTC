@@ -1,11 +1,19 @@
 <html>
 <head>
 <title>WebRTC Callee</title>
-<script src="Callee.js"></script>
+<script src="Caller.js"></script>
 <script type="text/javascript">
 <!--
 function OnStart() {
+   var remote_sdp = document.getElementById("remote_sdp");
+   if(remote_sdp.value.length == 0) {
+       window.alert("please set local sdp");
+       return;
+   }
+
    var c = new Caller();
+   c.setOutputLocalSDP(document.getElementById("local_sdp"));
+   c.setOutputRemoteSDP(document.getElementById("remote_sdp"));
    c.createPeerConnection();
    c.createAnswer();
 }
@@ -28,7 +36,6 @@ function OnStart() {
 <label>start to connect peer <br>
 <input type="button" value="createPeer/createAnswer" onclick="OnStart();"/>
 </label><br>
-
 
 </body>
 </html>

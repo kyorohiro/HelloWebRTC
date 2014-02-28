@@ -5,10 +5,13 @@ function Caller() {
     this.pcConfig = {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]};
     this.pcConstraints = {"optional": []};
     this.mOutputLocalSDP = "";
+    this.mOutputRemoteSDP = "";
 
     Caller.prototype.createPeerConnection = _createPeerConnection;
     Caller.prototype.createOffer = _createOffer;
-    Caller.prototype.setLocalSDP = _setLocalSDP;
+    Caller.prototype.createAnswer = _createAnswer;
+    Caller.prototype.setOutputLocalSDP = _setLocalSDP;
+    Caller.prototype.setOutputRemoteSDP = _setRemoteSDP;
     arguments.callee.iceType = _iceCandidateType;
 };
 
@@ -16,12 +19,35 @@ function _setLocalSDP(output) {
     this.mOutputLocalSDP = output;
 }
 
+function _setRemoteSDP(output) {
+    this.mOutputRemoteSDP = output;
+}
+
+function _createAnswer() {
+    console.log("+++createAnsert()\n");
+    var _own = this;
+    var sd = new RTCSessionDescription();
+    sd.type = "offer";
+    sd.sdp = this.mOutputRemoteSDP.value;
+    this.pc.setRemoteDescription(sd);
+    this.pc.createAnswer(
+	function _onSetLocalAndMessage (sessionDescription) {
+	    console.log("+++setLocalAndSendMessage obj="+sessionDescription+"\n");
+	    _own.pc.setLocalDescription(
+		sessionDescription, 
+		function() {console.log("+++onSetSessionDescriptionSuccess.");},
+		function(error) {console.log("+++onSetSessionDescriptionError" + error.toString());},
+		this.onSetLocalAndMessage,
+		function (error) {console.log("+++onCreateSessionDescriptionError("+error+"\n");}
+	    );});
+}
+
 function _createOffer() {
-    var _pc = this.pc;
+    var _own = this;
     this.pc.createOffer(
 	function _onSetLocalAndMessage (sessionDescription) {
 	    console.log("+++setLocalAndSendMessage obj="+sessionDescription+"\n");
-	    _pc.setLocalDescription(
+	    _own.pc.setLocalDescription(
 		sessionDescription, 
 		function() {console.log("+++onSetSessionDescriptionSuccess.");},
 		function(error) {console.log("+++onSetSessionDescriptionError" + error.toString());},
@@ -32,7 +58,7 @@ function _createOffer() {
 };
 
 function _iceCandidateType(candidateSDP) {
-    if (candidateSDP.indexOf("typ relay ") >= 0)
+    if (candidateSDP.indexOf("typ relay ") >= 0) 
 	return "TURN";
     if (candidateSDP.indexOf("typ srflx ") >= 0)
 	return "STUN";
@@ -51,8 +77,6 @@ function _createPeerConnection() {
 	    if(!event.candidate) {
 		console.log("------------sdp-----"+Caller.iceType(_own.pc.localDescription.sdp)+"-----\n");
 		console.log(""+_own.pc.localDescription.sdp);
-		//var t = document.getElementById("sdp");
-		//t.value = _pc.localDescription.sdp;
 		_own.mOutputLocalSDP.value = _own.pc.localDescription.sdp;
 		console.log("------------sdp----------\n");
 	    }
@@ -65,8 +89,4 @@ function _createPeerConnection() {
 	alert("can not create peer connection."+e+"");
     }
 }
-
-
-
-
 
