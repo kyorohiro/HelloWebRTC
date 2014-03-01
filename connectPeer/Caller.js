@@ -18,7 +18,7 @@ function Caller() {
     Caller.prototype.setOutputMessage = _setMessageLogBuffer;
     Caller.prototype.sendHello = _sendHello;
     Caller.prototype.setRemoteSDP = _setRemoteSDP;
-
+    Caller.prototype.setChannelEvents = _setChannelEvents;
     arguments.callee.iceType = _iceCandidateType;
 };
 
@@ -101,20 +101,9 @@ function _createPeerConnection() {
     var _own = this;
     try {
         this.pc = new webkitRTCPeerConnection(this.pcConfig, this.pcConstraints);
-	this.mDataChannel = this.pc.createDataChannel('channel',{});
-	this.mDataChannel.onmessage = function(event) {
-            console.log("onmessage:"+event.data);
-	    _own.mOutputMessage.value = ""+event.data+"\n"+_own.mOutputMessage.value;
-        };
-	this.mDataChannel.onopen = function(event) {
-            console.log("onopen:"+event);
-        };
-	this.mDataChannel.onerror = function(error) {
-            console.log("onerror:"+JSON.parse(error));
-        };
-	this.mDataChannel.onclose = function(error) {
-            console.log("onclose:"+JSON.parse(error));
-        };
+	this.mDataChannel = this.pc.createDataChannel("channel",{});
+
+	this.setChannelEvents();
 	var _own = this;
         this.pc.onicecandidate = function (event) {//RTCIceCandidateEvent
 	    console.log("+onIceCandidate("+event+","+event.candidate+") 00");
@@ -132,10 +121,29 @@ function _createPeerConnection() {
         this.pc.ondatachannel = function(event) {
 	    console.log("--ondatachannel-\n");
 	    _own.mDataChannel = event.channel;
+	    _own.setChannelEvents();
 	};
     } catch (e) {
 	alert("can not create peer connection."+e+"");
     }
+}
+ 
+function _setChannelEvents() {
+    console.log("+++setChannelEvent()\n");
+    var _own = this;
+    this.mDataChannel.onmessage = function(event) {
+        console.log("onmessage:"+event.data);
+	_own.mOutputMessage.value = ""+event.data+"\n"+_own.mOutputMessage.value;
+    };
+    this.mDataChannel.onopen = function(event) {
+        console.log("onopen:"+event);
+    };
+    this.mDataChannel.onerror = function(error) {
+        console.log("onerror:"+JSON.parse(error));
+    };
+    this.mDataChannel.onclose = function(error) {
+        console.log("onclose:"+JSON.parse(error));
+    };
 }
 
 

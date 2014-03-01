@@ -6,15 +6,16 @@
 <!--
 var c = null;
 function OnPushButtonCreateAnswer() {
-   var remote_sdp = document.getElementById("remote_sdp");
+   var remote_sdp = document.getElementById("textarea_remote_sdp");
    if(remote_sdp.value.length == 0) {
        window.alert("please set local sdp");
        return;
    }
 
    c = new Caller();
-   c.setOutputLocalSDP(document.getElementById("local_sdp"));
-   c.setOutputRemoteSDP(document.getElementById("remote_sdp"));
+   c.setOutputLocalSDP(document.getElementById("textarea_local_sdp"));
+   c.setOutputRemoteSDP(document.getElementById("textarea_remote_sdp"));
+   c.setOutputMessage(document.getElementById("textarea_on_message"));
    c.createPeerConnection();
    c.createAnswer();
 }
@@ -31,11 +32,15 @@ function OnPushButtonSendHello() {
 </div>
 
 <label>local_sdp<br>
-<textarea id="local_sdp"></textarea>
+<textarea id="textarea_local_sdp"></textarea>
 </label><br>
 
 <label>remote_sdp<br>
-<textarea id="remote_sdp"></textarea>
+<textarea id="textarea_remote_sdp"></textarea>
+</label><br>
+
+<label>on received<br>
+<textarea id="textarea_on_message"></textarea>
 </label><br>
 
 <h2>[How to use this sample]</h2>
