@@ -5,12 +5,16 @@
 <script type="text/javascript">
 <!--
 var c = null;
-function OnPushButtonCreateOffer() {
+
+function onPushButtonCreatePC() {
    c = new Caller();
    c.setOutputLocalSDP(document.getElementById("textarea_local_sdp"));
    c.setOutputRemoteSDP(document.getElementById("textarea_remote_sdp"));
    c.setOutputMessage(document.getElementById("textarea_on_message"));
    c.createPeerConnection();
+}
+
+function OnPushButtonCreateOffer() {
    c.createOffer();
 }
 
@@ -42,10 +46,14 @@ function OnPushButtonSendHello() {
 </label><br>
 
 <h2>[How to use this sample]</h2>
-<h4>1. push createPeer/createOffer button on caller.html</h4>
+<h4>1. push createPeer and createOffer button on caller.html</h4>
 
 <label>
-<input type="button" value="createPeer/createOffer" onclick="OnPushButtonCreateOffer();"/>
+<input type="button" value="createPeer" onclick="onPushButtonCreatePC();"/>
+</label><br>
+
+<label>
+<input type="button" value="createOffer" onclick="OnPushButtonCreateOffer();"/>
 </label><br>
 
 <h4>2. copy "local sdp value on caller.html" to "remote_sdp on callee.html"</h4>

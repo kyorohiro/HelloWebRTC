@@ -5,6 +5,21 @@
 <script type="text/javascript">
 <!--
 var c = null;
+
+function OnPushButtonCreatePC() {
+   c = new Caller();
+   c.setOutputLocalSDP(document.getElementById("textarea_local_sdp"));
+   c.setOutputRemoteSDP(document.getElementById("textarea_remote_sdp"));
+   c.setOutputMessage(document.getElementById("textarea_on_message"));
+   c.createPeerConnection();   
+}
+
+function OnPushButtonSetRemoteSDP() {
+   var type = "offer";
+   var sdp = document.getElementById("textarea_remote_sdp").value;
+   c.setRemoteSDP(type, sdp);
+}
+
 function OnPushButtonCreateAnswer() {
    var remote_sdp = document.getElementById("textarea_remote_sdp");
    if(remote_sdp.value.length == 0) {
@@ -12,11 +27,6 @@ function OnPushButtonCreateAnswer() {
        return;
    }
 
-   c = new Caller();
-   c.setOutputLocalSDP(document.getElementById("textarea_local_sdp"));
-   c.setOutputRemoteSDP(document.getElementById("textarea_remote_sdp"));
-   c.setOutputMessage(document.getElementById("textarea_on_message"));
-   c.createPeerConnection();
    c.createAnswer();
 }
 function OnPushButtonSendHello() {
@@ -51,7 +61,15 @@ function OnPushButtonSendHello() {
 
 <h4>3. push "createPeer/createAnswer button" on callee.html</h4>
 <label>
-<input type="button" value="createPeer/createAnswer" onclick="OnPushButtonCreateAnswer();"/>
+<input type="button" value="createPeer" onclick="OnPushButtonCreatePC();"/>
+</label><br>
+
+<label>
+<input type="button" value="set remote sdp" onclick="OnPushButtonSetRemoteSDP();"/>
+</label><br>
+
+<label>
+<input type="button" value="createAnswer" onclick="OnPushButtonCreateAnswer();"/>
 </label><br>
 
 

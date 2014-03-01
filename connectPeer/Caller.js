@@ -49,12 +49,12 @@ function _setMessageLogBuffer(output) {
 }
 
 function _createAnswer() {
-    console.log("+++createAnsert()"+this.mOutputRemoteSDP.value+"\n");
+    console.log("+++createAnsert()\n");
     var _own = this;
-    var sd = new RTCSessionDescription();
-    sd.type = "offer";
-    sd.sdp = this.mOutputRemoteSDP.value;
-    this.pc.setRemoteDescription(sd);
+//    var sd = new RTCSessionDescription();
+//    sd.type = "offer";
+//    sd.sdp = this.mOutputRemoteSDP.value;
+//    this.pc.setRemoteDescription(sd);
     this.pc.createAnswer(
 	function _onSetLocalAndMessage (sessionDescription) {
 	    console.log("+++setLocalAndSendMessage obj="+sessionDescription+"\n");
