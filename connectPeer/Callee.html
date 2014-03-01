@@ -22,10 +22,10 @@ function OnPushButtonSetRemoteSDP() {
 
 function OnPushButtonCreateAnswer() {
    var remote_sdp = document.getElementById("textarea_remote_sdp");
-   if(remote_sdp.value.length == 0) {
-       window.alert("please set local sdp");
-       return;
-   }
+//   if(remote_sdp.value.length == 0) {
+//       window.alert("please set local sdp");
+//       return;
+//   }
 
    c.createAnswer();
 }
@@ -54,12 +54,12 @@ function OnPushButtonSendHello() {
 </label><br>
 
 <h2>[How to use this sample]</h2>
-<h4>1. push createPeer/createOffer button on caller.html</h4>
+<h4>1. push createPeer and createOffer button on caller.html</h4>
 
 <h4>2. copy "local sdp value on caller.html" to "remote_sdp on callee.html"</h4>
 
 
-<h4>3. push "createPeer/createAnswer button" on callee.html</h4>
+<h4>3. push "createPeer" and "set remote sdp" and "createAnswer button" on callee.html</h4>
 <label>
 <input type="button" value="createPeer" onclick="OnPushButtonCreatePC();"/>
 </label><br>
@@ -78,7 +78,7 @@ function OnPushButtonSendHello() {
 <h4>5. push "set remote sdp button" on caller.html</h4>
 
 <h4>6. push "send hello button" on callee.html</h4>
-<label>send hello <br>
+<label>
 <input type="button" value="send_hello" onclick="OnPushButtonSendHello();"/>
 </label><br>
 
