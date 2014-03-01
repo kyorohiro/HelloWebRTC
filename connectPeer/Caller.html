@@ -7,28 +7,38 @@
 var c = null;
 function OnPushButtonCreateOffer() {
    c = new Caller();
-   c.setOutputLocalSDP(document.getElementById("local_sdp"));
-   c.setOutputRemoteSDP(document.getElementById("remote_sdp"));
+   c.setOutputLocalSDP(document.getElementById("textarea_local_sdp"));
+   c.setOutputRemoteSDP(document.getElementById("textarea_remote_sdp"));
+   c.setOutputMessage(document.getElementById("textarea_on_message"));
    c.createPeerConnection();
-   c.createOffer();
+   c.createOffer();x
 }
 
 function OnPushButtonSetRemoteSDP() {
    var type = "answer";
-   var sdp = document.getElementById("remote_sdp").value;
+   var sdp = document.getElementById("textarea_remote_sdp").value;
    c.setRemoteSDP(type, sdp);
 }
+
+function OnPushButtonSendHello() {
+   c.sendHello();
+}
+
 //-->
 </script>
 </head>
 <body bgcolor="#AAFFAA">
 
 <label>local sdp<br>
-<textarea id="local_sdp"></textarea>
+<textarea id="textarea_local_sdp"></textarea>
 </label><br>
 
 <label>remote sdp<br>
-<textarea id="remote_sdp"></textarea>
+<textarea id="textarea_remote_sdp"></textarea>
+</label><br>
+
+<label>on received<br>
+<textarea id="textarea_on_message"></textarea>
 </label><br>
 
 <h2>[How to use this sample]</h2>
@@ -52,6 +62,11 @@ function OnPushButtonSetRemoteSDP() {
 </label><br>
 
 <h4>6. push "send hello button" on callee.html</h4>
+
+<h4>7. push "send hello button" on caller.html</h4>
+<label>
+<input type="button" value="sendHello" onclick="OnPushButtonSendHello();"/>
+</label><br>
 
 </body>
 </html>

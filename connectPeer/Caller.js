@@ -7,6 +7,7 @@ function Caller() {
     this.pcConstraints = { 'optional': [{'DtlsSrtpKeyAgreement': true}, {'RtpDataChannels': true }] };
     this.mOutputLocalSDP = "";
     this.mOutputRemoteSDP = "";
+    this.mOutputMessage = "";
     this.mDataChannel = null;
 
     Caller.prototype.createPeerConnection = _createPeerConnection;
@@ -14,6 +15,7 @@ function Caller() {
     Caller.prototype.createAnswer = _createAnswer;
     Caller.prototype.setOutputLocalSDP = _setLocalSDPLogBuffer;
     Caller.prototype.setOutputRemoteSDP = _setRemoteSDPLogBuffer;
+    Caller.prototype.setOutputMessage = _setMessageLogBuffer;
     Caller.prototype.sendHello = _sendHello;
     Caller.prototype.setRemoteSDP = _setRemoteSDP;
 
@@ -40,6 +42,10 @@ function _setLocalSDPLogBuffer(output) {
 
 function _setRemoteSDPLogBuffer(output) {
     this.mOutputRemoteSDP = output;
+}
+
+function _setMessageLogBuffer(output) {
+    this.mOutputMessage = output;
 }
 
 function _createAnswer() {
@@ -78,22 +84,27 @@ function _createOffer() {
 };
 
 function _iceCandidateType(candidateSDP) {
-    if (candidateSDP.indexOf("typ relay ") >= 0) 
+    if (candidateSDP.indexOf("typ relay ") >= 0) {
 	return "TURN";
-    if (candidateSDP.indexOf("typ srflx ") >= 0)
+    }
+    if (candidateSDP.indexOf("typ srflx ") >= 0) {
 	return "STUN";
-    if (candidateSDP.indexOf("typ host ") >= 0)
+    }
+    if (candidateSDP.indexOf("typ host ") >= 0) {
 	return "HOST";
+    }
     return "UNKNOWN";
 }
 
 function _createPeerConnection() {
     console.log("+++createPeerConnection()\n");
+    var _own = this;
     try {
         this.pc = new webkitRTCPeerConnection(this.pcConfig, this.pcConstraints);
 	this.mDataChannel = this.pc.createDataChannel('channel',{});
 	this.mDataChannel.onmessage = function(event) {
-            console.log("onmessage:"+event);
+            console.log("onmessage:"+event.data);
+	    _own.mOutputMessage.value = ""+event.data+"\n"+_own.mOutputMessage.value;
         };
 	this.mDataChannel.onopen = function(event) {
             console.log("onopen:"+event);
@@ -119,10 +130,12 @@ function _createPeerConnection() {
         this.pc.onsignalingstatechange = function (event) {console.log("+++onSignalingChanged("+event+"\n");};
         this.pc.oniceconnectionstatechange = function (event) {console.log("+++onIceConnectionStateChanged("+event+"\n");};
         this.pc.ondatachannel = function(event) {
-		console.log("--ondatachannel-\n");
+	    console.log("--ondatachannel-\n");
+	    _own.mDataChannel = event.channel;
 	};
     } catch (e) {
 	alert("can not create peer connection."+e+"");
     }
 }
+
 
