@@ -29,7 +29,8 @@ function onIceCandidate(event) {//RTCIceCandidateEvent
     console.log("+onIceCandidate("+event+","+event.candidate+") 00");
     if(!event.candidate) {
 	console.log("------------sdp----------\n");
-	console.log(""+pc.localDescription.sdp);
+	console.log("#"+iceCandidateType(pc.localDescription.sdp)+"#\n");
+	console.log(""+pc.localDescription.sdp+"\n");
 	var t = document.getElementById("sdp");
 	t.value = pc.localDescription.sdp;
 	console.log("------------sdp----------\n");
