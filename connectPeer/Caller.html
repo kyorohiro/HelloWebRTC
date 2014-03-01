@@ -3,10 +3,9 @@
 <title>WebRTC Caller</title>
 <script src="Caller.js"></script>
 <script type="text/javascript">
-
 <!--
 var c = null;
-function OnStart() {
+function OnPushButtonCreateOffer() {
    c = new Caller();
    c.setOutputLocalSDP(document.getElementById("local_sdp"));
    c.setOutputRemoteSDP(document.getElementById("remote_sdp"));
@@ -14,8 +13,10 @@ function OnStart() {
    c.createOffer();
 }
 
-function OnSet() {
-   c.setRemoteSDP("answer", document.getElementById("remote_sdp").value);
+function OnPushButtonSetRemoteSDP() {
+   var type = "answer";
+   var sdp = document.getElementById("remote_sdp").value;
+   c.setRemoteSDP(type, sdp);
 }
 //-->
 </script>
@@ -34,7 +35,7 @@ function OnSet() {
 <h4>1. push createPeer/createOffer button on caller.html</h4>
 
 <label>
-<input type="button" value="createPeer/createOffer" onclick="OnStart();"/>
+<input type="button" value="createPeer/createOffer" onclick="OnPushButtonCreateOffer();"/>
 </label><br>
 
 <h4>2. copy "local sdp value on caller.html" to "remote_sdp on callee.html"</h4>
@@ -47,7 +48,7 @@ function OnSet() {
 
 <h4>5. push "set remote sdp button" on caller.html</h4>
 <label>
-<input type="button" value="set remote sdp" onclick="OnSet();"/>
+<input type="button" value="set remote sdp" onclick="OnPushButtonSetRemoteSDP();"/>
 </label><br>
 
 <h4>6. push "send hello button" on callee.html</h4>

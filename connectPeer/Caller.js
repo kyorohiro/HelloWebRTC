@@ -12,8 +12,8 @@ function Caller() {
     Caller.prototype.createPeerConnection = _createPeerConnection;
     Caller.prototype.createOffer = _createOffer;
     Caller.prototype.createAnswer = _createAnswer;
-    Caller.prototype.setOutputLocalSDP = _setLocalSDPBuffer;
-    Caller.prototype.setOutputRemoteSDP = _setRemoteSDPBuffer;
+    Caller.prototype.setOutputLocalSDP = _setLocalSDPLogBuffer;
+    Caller.prototype.setOutputRemoteSDP = _setRemoteSDPLogBuffer;
     Caller.prototype.sendHello = _sendHello;
     Caller.prototype.setRemoteSDP = _setRemoteSDP;
 
@@ -24,7 +24,7 @@ function _setRemoteSDP(_type, _sdp) {
     console.log("+++setRemoteSDP()"+_type+","+_sdp+"\n");
     var sd = new RTCSessionDescription();
     sd.type = _type;
-    sd.sdp = _sdp;//othis.mOutputRemoteSDP.value;
+    sd.sdp = _sdp;
     this.pc.setRemoteDescription(sd);
 }
 
@@ -33,11 +33,12 @@ function _sendHello() {
     this.mDataChannel.send("hello");
 }
 
-function _setLocalSDPBuffer(output) {
+// output log on page
+function _setLocalSDPLogBuffer(output) {
     this.mOutputLocalSDP = output;
 }
 
-function _setRemoteSDPBuffer(output) {
+function _setRemoteSDPLogBuffer(output) {
     this.mOutputRemoteSDP = output;
 }
 
@@ -61,6 +62,7 @@ function _createAnswer() {
 }
 
 function _createOffer() {
+    console.log("+++createOffer()\n");
     var _own = this;
     this.pc.createOffer(
 	function _onSetLocalAndMessage (sessionDescription) {
@@ -86,8 +88,8 @@ function _iceCandidateType(candidateSDP) {
 }
 
 function _createPeerConnection() {
+    console.log("+++createPeerConnection()\n");
     try {
-        console.log("+++create peer connection");
         this.pc = new webkitRTCPeerConnection(this.pcConfig, this.pcConstraints);
 	this.mDataChannel = this.pc.createDataChannel('channel',{});
 	this.mDataChannel.onmessage = function(event) {

@@ -5,7 +5,7 @@
 <script type="text/javascript">
 <!--
 var c = null;
-function OnStart() {
+function OnPushButtonCreateAnswer() {
    var remote_sdp = document.getElementById("remote_sdp");
    if(remote_sdp.value.length == 0) {
        window.alert("please set local sdp");
@@ -18,7 +18,7 @@ function OnStart() {
    c.createPeerConnection();
    c.createAnswer();
 }
-function OnSend() {
+function OnPushButtonSendHello() {
     c.sendHello();
 }
 //-->
@@ -46,7 +46,7 @@ function OnSend() {
 
 <h4>3. push "createPeer/createAnswer button" on callee.html</h4>
 <label>
-<input type="button" value="createPeer/createAnswer" onclick="OnStart();"/>
+<input type="button" value="createPeer/createAnswer" onclick="OnPushButtonCreateAnswer();"/>
 </label><br>
 
 
@@ -56,7 +56,7 @@ function OnSend() {
 
 <h4>6. push "send hello button" on callee.html</h4>
 <label>send hello <br>
-<input type="button" value="send_hello" onclick="OnSend();"/>
+<input type="button" value="send_hello" onclick="OnPushButtonSendHello();"/>
 </label><br>
 
 
