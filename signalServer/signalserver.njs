@@ -37,22 +37,33 @@ var SignalServer = function SignalServer() {
 				console.log("mes:"+mes.utf8Data);
 				var type = JSON.parse(mes.utf8Data)["_type"];
 				var sdp = JSON.parse(mes.utf8Data)["_sdp"];
-				var uuid = JSON.parse(mes.utf8Data)["_uuid"];
+				var myuuid = JSON.parse(mes.utf8Data)["_uuid"];
+				var touuid = JSON.parse(mes.utf8Data)["_touuid"];
 				console.log("type:"+type);
 				console.log("sdp:"+sdp);
-				console.log("uuid:"+uuid);
-				_own.userInfos.add(uuid, sdp, "name", websocket)
-				var v = {}
-				v["_type"] = type;
-				v["_sdp"] = sdp;
-				v["uuid"] = uuid;
-				_own.broadcastOffer(JSON.stringify(v));
+				console.log("uuid:"+myuuid);
+				if(type === "offer") {
+					_own.userInfos.add(myuuid, sdp, "name", websocket)
+					var v = {}
+					v["_type"] = type;
+					v["_sdp"] = sdp;
+					v["_uuid"] = myuuid;
+					//
+					_own.broadcastMessage(JSON.stringify(v));
+				} else if(type =="answer"){
+					var v = {}
+					v["_type"] = type;
+					v["_sdp"] = sdp;
+					v["_uuid"] = myuuid;
+					v["_touuid"] = touuid;
+					_own.broadcastMessage(JSON.stringify(v));
+				}
 			});
 		});
 	};
 
-	SignalServer.prototype.broadcastOffer = function(_message) {
-		console.log("----broadcast-----");
+	SignalServer.prototype.broadcastMessage = function(_message) {
+		console.log("----broadcast----");
 		this.userInfos.show();
 		var keys = this.userInfos.keys();
 		while(keys.length != 0) {
@@ -63,6 +74,18 @@ var SignalServer = function SignalServer() {
 		}
 		console.log("----//broadcast-----");
 	}
+
+	SignalServer.prototype.uniMessage = function(touuid,_message) {
+		console.log("----uni----");
+		try {
+			var socket = this.userInfos.get(touuid)["socket"];
+			socket.send(_message);
+			console.log(_message);
+		} catch(e) {
+		}
+		console.log("----//uni-----");
+	}
+
 };
 
 module.exports = SignalServer;

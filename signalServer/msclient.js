@@ -14,8 +14,13 @@ function MSClient() {
 		this.ws.send(JSON.stringify(v));
 	};
 
-	MSClient.prototype.sendAnswer = function(sdp) {
-		this.ws.send(sdp);
+	MSClient.prototype.sendAnswer = function(uuid, sdp, touuid) {
+		var v = {};
+		v["_type"] = "answer";
+		v["_sdp"] = sdp;
+		v["_uuid"] = uuid;
+		v["_touuid"] = touuid;
+		this.ws.send(JSON.stringify(v));
 	};
 
 	this.ws.onmessage = function(m) {
