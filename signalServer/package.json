@@ -1,8 +1,8 @@
 {
-  "name": "hellonodejs",
+  "name": "signalServer",
   "version": "0.1.0",
-  "description": "hellonodejs",
-  "main": "hello-world-server.njs",
+  "description": "signalServer",
+  "main": "main.njs",
   "scripts": {
     "test": "echo \"Error: no test specified! Configure in package.json\" && exit 1"
   },
