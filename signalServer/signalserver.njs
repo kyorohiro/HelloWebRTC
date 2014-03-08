@@ -55,8 +55,7 @@ var SignalServer = function SignalServer() {
 					v["_type"] = type;
 					v["_sdp"] = sdp;
 					v["_uuid"] = myuuid;
-					v["_touuid"] = touuid;
-					_own.broadcastMessage(JSON.stringify(v));
+					_own.uniMessage(touuid, JSON.stringify(v));
 				}
 			});
 		});

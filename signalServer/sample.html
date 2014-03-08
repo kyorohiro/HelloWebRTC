@@ -5,11 +5,17 @@
 <script type="text/javascript">
 <!--
 var _msclient = new MSClient();
-function onPushSendButton() {
+function onPushSendOffer() {
     console.log("push send button");
     var uuid = document.getElementById("uuid").textContent;
 	console.log("a="+uuid);
     _msclient.sendOffer(uuid, "sdp");
+}
+function onPushSendAnswer() {
+    console.log("push send button");
+    var uuid = document.getElementById("uuid").textContent;
+	console.log("a="+uuid);
+    _msclient.sendAnswer(uuid, "sdp", "dummy");
 }
 //-->
 </script>
@@ -17,7 +23,8 @@ function onPushSendButton() {
 <body>
 <label id="uuid">uuid_value</label>
 <div>wssample</div>
-<button id="send" onclick="onPushSendButton();">send</button>
+<button id="sendOffer" onclick="onPushSendOffer();">sendOffer</button><br><br>
+<button id="sendAnswer" onclick="onPushSendAnswer();">sendAnswer</button><br><br>
 </body>
 </html>
 
