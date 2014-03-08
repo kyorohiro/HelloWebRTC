@@ -7,12 +7,15 @@
 var _msclient = new MSClient();
 function onPushSendButton() {
     console.log("push send button");
-    _msclient.send();
+    var uuid = document.getElementById("uuid").textContent;
+	console.log("a="+uuid);
+    _msclient.sendOffer(uuid, "sdp");
 }
 //-->
 </script>
 </header>
 <body>
+<label id="uuid">uuid_value</label>
 <div>wssample</div>
 <button id="send" onclick="onPushSendButton();">send</button>
 </body>
