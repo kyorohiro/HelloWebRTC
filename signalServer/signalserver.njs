@@ -48,8 +48,9 @@ var SignalServer = function SignalServer() {
 					v["_type"] = type;
 					v["_sdp"] = sdp;
 					v["_uuid"] = myuuid;
+					v["_touuid"] = touuid;
 					//
-					_own.broadcastMessage(JSON.stringify(v));
+					_own.uniMessage(touuid, JSON.stringify(v));
 				} else if(type =="answer"){
 					var v = {}
 					v["_type"] = type;
@@ -57,8 +58,13 @@ var SignalServer = function SignalServer() {
 					v["_uuid"] = myuuid;
 					_own.uniMessage(touuid, JSON.stringify(v));
 				} else if(type =="join"){
-					_own.userInfos.add(myuuid, "sdp", "name", websocket);					
-				}
+					_own.userInfos.add(myuuid, "sdp", "name", websocket);
+					var v = {}
+					v["_type"] = "join";
+					v["_uuid"] = myuuid;
+					v["_name"] = "name";
+					_own.broadcastMessage(JSON.stringify(v));
+				} 
 			});
 		});
 	};

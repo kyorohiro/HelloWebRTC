@@ -13,7 +13,7 @@ var _callerinfo = new CallerInfo();
 window.onload = function() {
 	var uuid = document.getElementById("uuid").textContent;
 	_caller = new Caller(uuid);
-	_msclient = new SignalClient();
+	_msclient = new SignalClient("ws://localhost:8080");
 	_msclient.setOnMessage(onMessage);
 }
 function onPushSendJoin() {
@@ -33,7 +33,7 @@ function onReceiveSDP(_type,sdp){
 	var uuid = document.getElementById("uuid").textContent;
 	console.log("a="+uuid);
 	if("offer" === _type) {
-		_msclient.sendOffer(uuid, sdp);
+		_msclient.sendOffer(uuid, sdp, _caller.getTargetUUID());
 	} else if("answer" === _type) {
 		_msclient.sendAnswer(uuid, sdp, _caller.getTargetUUID());
 	}
@@ -46,23 +46,22 @@ function onPushSendHello() {
 }
 
 function onPushSendOffer() {
-    console.log("push send button");
+    console.log("push send button"+event.srcElement.uuid);
+    var uuid = event.srcElement.value;
+    _caller.setTargetUUID(uuid);
     _caller.setOnReceiveSDP(onReceiveSDP);
     _caller.createPeerConnection();
     _caller.createOffer();
 }
 
-function onPushSendAnswer() {
-    console.log("push send button:"+event.srcElement.value+","+event.srcElement.sdp);
-    var uuid = event.srcElement.value;
-    var sdp = _callerinfo.get(uuid).sdp;
-	console.log("a="+uuid);
+
+function sendAnswer(uuid, sdp) {
+    console.log("+++sendAnswer");
 	_caller.setTargetUUID(uuid);
 	_caller.setOnReceiveSDP(onReceiveSDP);
     _caller.createPeerConnection();
 	_caller.setRemoteSDP("offer", sdp);
 	_caller.createAnswer();
-//    _msclient.sendAnswer(uuid, "sdp", event.srcElement.value);
 }
 
 function onMessage(m) {
@@ -74,16 +73,17 @@ function onMessage(m) {
 	if("answer"===type) {
 		_caller.setTargetUUID(uuid);
 		_caller.setRemoteSDP("answer", sdp);
-	}
-	else if("offer" === type) {
-		_callerinfo.add();
+	} else if("offer" === type) {
+		// send answer
+		sendAnswer(uuid,sdp);
+	} else if("join" === type) {
+		// create button
 		var elm = document.createElement("button");
 		elm.textContent = uuid;
 		var offerList = document.getElementById("offerlist");
-		elm.setAttribute("onclick", "onPushSendAnswer();");
+		elm.setAttribute("onclick", "onPushSendOffer();");
 		elm.setAttribute("value", uuid);
-		offerList.appendChild(elm);
-		_callerinfo.add(uuid, sdp);
+		offerList.appendChild(elm);		
 	}
 }
 
@@ -102,7 +102,7 @@ function onMessage(m) {
 <button id="sendOffer" onclick="onPushSendHello();">sendHello</button><br><br>
 
 <div id="offerlist">
-<label>Offer</label><br>
+<label>PeerList</label><br>
 </div>
 
 <div id="peerlist">
