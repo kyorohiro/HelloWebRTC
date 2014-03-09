@@ -1,11 +1,11 @@
-function MSClient() {
+function SignalClient() {
 	this.ws = new WebSocket("ws://localhost:8080");
 
-	MSClient.prototype.send = function() {
+	SignalClient.prototype.send = function() {
 		this.ws.send("hello");
 	};
 
-	MSClient.prototype.sendOffer = function(uuid, sdp) {
+	SignalClient.prototype.sendOffer = function(uuid, sdp) {
 		var v = {};
 		v["_type"] = "offer";
 		v["_sdp"] = sdp;
@@ -14,7 +14,7 @@ function MSClient() {
 		this.ws.send(JSON.stringify(v));
 	};
 
-	MSClient.prototype.sendAnswer = function(uuid, sdp, touuid) {
+	SignalClient.prototype.sendAnswer = function(uuid, sdp, touuid) {
 		var v = {};
 		v["_type"] = "answer";
 		v["_sdp"] = sdp;
@@ -23,8 +23,17 @@ function MSClient() {
 		this.ws.send(JSON.stringify(v));
 	};
 
+	this.mOnMessage = null;
+	SignalClient.prototype.setOnMessage = function(f) {
+		this.mOnMessage = f;
+	}
+
+	var _own = this;
 	this.ws.onmessage = function(m) {
-		console.log("--onMessage()"+m.data);
+		console.log("--onMessage()["+"]"+m.data);
+		if(_own.mOnMessage != null) {
+			_own.mOnMessage(m);
+		}
 	};
 
 	this.ws.onclose = function(m) {

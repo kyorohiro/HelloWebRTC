@@ -1,22 +1,41 @@
 <html>
 <header>
 <title>sample</title>
-<script src="msclient.js"></script>
+<script src="signalclient.js"></script>
 <script type="text/javascript">
 <!--
-var _msclient = new MSClient();
+var _msclient = new SignalClient();
 function onPushSendOffer() {
     console.log("push send button");
     var uuid = document.getElementById("uuid").textContent;
 	console.log("a="+uuid);
     _msclient.sendOffer(uuid, "sdp");
 }
+
 function onPushSendAnswer() {
-    console.log("push send button");
+    console.log("push send button:"+event.srcElement.value);
     var uuid = document.getElementById("uuid").textContent;
 	console.log("a="+uuid);
-    _msclient.sendAnswer(uuid, "sdp", "dummy");
+    _msclient.sendAnswer(uuid, "sdp", event.srcElement.value);
 }
+
+function onMessage(m) {
+	console.log("--onMessage()[--]"+m.data);
+	var type = JSON.parse(m.data)["_type"];
+	if("answer"===type) {
+		
+	}
+	else if("offer" === type) {
+		var elm = document.createElement("button");
+		elm.textContent = JSON.parse(m.data)["_uuid"];
+		var offerList = document.getElementById("offerlist");
+		elm.setAttribute("onclick", "onPushSendAnswer();");
+		elm.setAttribute("value", JSON.parse(m.data)["_uuid"]);
+		offerList.appendChild(elm);
+	}
+}
+
+_msclient.setOnMessage(onMessage);
 //-->
 </script>
 </header>
@@ -25,6 +44,11 @@ function onPushSendAnswer() {
 <div>wssample</div>
 <button id="sendOffer" onclick="onPushSendOffer();">sendOffer</button><br><br>
 <button id="sendAnswer" onclick="onPushSendAnswer();">sendAnswer</button><br><br>
+
+<div id="offerlist">
+<label>Offer</label><br>
+
+</div>
 </body>
 </html>
 

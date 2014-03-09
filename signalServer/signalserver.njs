@@ -75,12 +75,13 @@ var SignalServer = function SignalServer() {
 	}
 
 	SignalServer.prototype.uniMessage = function(touuid,_message) {
-		console.log("----uni----");
+		console.log("----uni----"+touuid);
 		try {
 			var socket = this.userInfos.get(touuid)["socket"];
 			socket.send(_message);
 			console.log(_message);
 		} catch(e) {
+			console.log(e);
 		}
 		console.log("----//uni-----");
 	}
