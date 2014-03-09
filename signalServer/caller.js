@@ -36,7 +36,7 @@ var Caller = function Caller(id) {
 				if(!event.candidate) {
 					console.log("------------sdp--"+_own.pc.localDescription.type+"---"+Caller.iceType(_own.pc.localDescription.sdp)+"-----\n");
 					//console.log(""+_own.pc.localDescription.sdp);
-					_own.mOnReceiveSDP(_own.pc.localDescription.type, _own.pc.localDescription.sdp);
+					_own.mOnReceiveSDP(_own, _own.pc.localDescription.type, _own.pc.localDescription.sdp);
 					console.log("------------sdp----------\n");
 				}
 			};

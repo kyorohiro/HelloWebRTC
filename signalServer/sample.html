@@ -6,13 +6,11 @@
 <script src="callerinfo.js"></script>
 <script type="text/javascript">
 <!--
-var _caller = null;
 var _msclient = null;
 var _callerinfo = new CallerInfo();
 
 window.onload = function() {
 	var uuid = document.getElementById("uuid").textContent;
-	_caller = new Caller(uuid);
 	_msclient = new SignalClient("ws://localhost:8080");
 	_msclient.setOnMessage(onMessage);
 }
@@ -22,7 +20,7 @@ function onPushSendJoin() {
 	_msclient.join(uuid);	
 }
 
-function onReceiveSDP(_type,sdp){
+function onReceiveSDP(_caller, _type, sdp){
 	console.log("##########");
 	console.log("##########");
 	console.log("type="+_type+"");
@@ -32,6 +30,7 @@ function onReceiveSDP(_type,sdp){
 	console.log("##########");
 	var uuid = document.getElementById("uuid").textContent;
 	console.log("a="+uuid);
+	_callerinfo.show();
 	if("offer" === _type) {
 		_msclient.sendOffer(uuid, sdp, _caller.getTargetUUID());
 	} else if("answer" === _type) {
@@ -42,12 +41,20 @@ function onReceiveSDP(_type,sdp){
 
 function onPushSendHello() {
     console.log("sendHello()");
-    _caller.sendHello();
+    var keys = _callerinfo.keys();
+    while(keys.length != 0) {
+    	var key = keys.pop();
+    	var _caller = _callerinfo.get(key).caller;
+   	    console.log("sendHello() " + key);
+    	_caller.sendHello();
+    }
 }
 
 function onPushSendOffer() {
     console.log("push send button"+event.srcElement.uuid);
     var uuid = event.srcElement.value;
+    var _caller = new Caller(uuid);
+    _callerinfo.add(uuid, _caller);
     _caller.setTargetUUID(uuid);
     _caller.setOnReceiveSDP(onReceiveSDP);
     _caller.createPeerConnection();
@@ -57,6 +64,8 @@ function onPushSendOffer() {
 
 function sendAnswer(uuid, sdp) {
     console.log("+++sendAnswer");
+    var _caller = new Caller(uuid);
+    _callerinfo.add(uuid, _caller);
 	_caller.setTargetUUID(uuid);
 	_caller.setOnReceiveSDP(onReceiveSDP);
     _caller.createPeerConnection();
@@ -68,9 +77,12 @@ function onMessage(m) {
 	var type = JSON.parse(m.data)["_type"];
 	var sdp =  JSON.parse(m.data)["_sdp"];
 	var uuid = JSON.parse(m.data)["_uuid"];
-	console.log("--onMessage()[--]"+type+","+uuid);
+	var touuid = JSON.parse(m.data)["_touuid"];
+	console.log("--onMessage()[--]"+type+","+uuid+","+touuid);
+
 
 	if("answer"===type) {
+		var _caller = _callerinfo.get(uuid).caller;
 		_caller.setTargetUUID(uuid);
 		_caller.setRemoteSDP("answer", sdp);
 	} else if("offer" === type) {
