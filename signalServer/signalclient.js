@@ -1,8 +1,15 @@
-function SignalClient() {
+var SignalClient = function SignalClient() {
 	this.ws = new WebSocket("ws://localhost:8080");
 
 	SignalClient.prototype.send = function() {
 		this.ws.send("hello");
+	};
+
+	SignalClient.prototype.join = function(uuid, sdp) {
+		var v = {};
+		v["_type"] = "join";
+		v["_uuid"] = uuid;
+		this.ws.send(JSON.stringify(v));
 	};
 
 	SignalClient.prototype.sendOffer = function(uuid, sdp) {
@@ -39,4 +46,5 @@ function SignalClient() {
 	this.ws.onclose = function(m) {
 		console.log("--onClose()"+m);
 	};
-}
+};
+try{module.exports = SignalClient;} catch(e){}

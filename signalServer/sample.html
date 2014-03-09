@@ -2,53 +2,113 @@
 <header>
 <title>sample</title>
 <script src="signalclient.js"></script>
+<script src="caller.js"></script>
+<script src="callerinfo.js"></script>
 <script type="text/javascript">
 <!--
-var _msclient = new SignalClient();
+var _caller = null;
+var _msclient = null;
+var _callerinfo = new CallerInfo();
+
+window.onload = function() {
+	var uuid = document.getElementById("uuid").textContent;
+	_caller = new Caller(uuid);
+	_msclient = new SignalClient();
+	_msclient.setOnMessage(onMessage);
+}
+function onPushSendJoin() {
+	var uuid = document.getElementById("uuid").textContent;
+	console.log("join():uuid="+uuid);
+	_msclient.join(uuid);	
+}
+
+function onReceiveSDP(_type,sdp){
+	console.log("##########");
+	console.log("##########");
+	console.log("type="+_type+"");
+	console.log("#####SDP#####");
+	console.log(""+sdp+"");
+	console.log("##########");
+	console.log("##########");
+	var uuid = document.getElementById("uuid").textContent;
+	console.log("a="+uuid);
+	if("offer" === _type) {
+		_msclient.sendOffer(uuid, sdp);
+	} else if("answer" === _type) {
+		_msclient.sendAnswer(uuid, sdp, _caller.getTargetUUID());
+	}
+	
+}
+
+function onPushSendHello() {
+    console.log("sendHello()");
+    _caller.sendHello();
+}
+
 function onPushSendOffer() {
     console.log("push send button");
-    var uuid = document.getElementById("uuid").textContent;
-	console.log("a="+uuid);
-    _msclient.sendOffer(uuid, "sdp");
+    _caller.setOnReceiveSDP(onReceiveSDP);
+    _caller.createPeerConnection();
+    _caller.createOffer();
 }
 
 function onPushSendAnswer() {
-    console.log("push send button:"+event.srcElement.value);
-    var uuid = document.getElementById("uuid").textContent;
+    console.log("push send button:"+event.srcElement.value+","+event.srcElement.sdp);
+    var uuid = event.srcElement.value;
+    var sdp = _callerinfo.get(uuid).sdp;
 	console.log("a="+uuid);
-    _msclient.sendAnswer(uuid, "sdp", event.srcElement.value);
+	_caller.setTargetUUID(uuid);
+	_caller.setOnReceiveSDP(onReceiveSDP);
+    _caller.createPeerConnection();
+	_caller.setRemoteSDP("offer", sdp);
+	_caller.createAnswer();
+//    _msclient.sendAnswer(uuid, "sdp", event.srcElement.value);
 }
 
 function onMessage(m) {
-	console.log("--onMessage()[--]"+m.data);
 	var type = JSON.parse(m.data)["_type"];
+	var sdp =  JSON.parse(m.data)["_sdp"];
+	var uuid = JSON.parse(m.data)["_uuid"];
+	console.log("--onMessage()[--]"+type+","+uuid);
+
 	if("answer"===type) {
-		
+		_caller.setTargetUUID(uuid);
+		_caller.setRemoteSDP("answer", sdp);
 	}
 	else if("offer" === type) {
+		_callerinfo.add();
 		var elm = document.createElement("button");
-		elm.textContent = JSON.parse(m.data)["_uuid"];
+		elm.textContent = uuid;
 		var offerList = document.getElementById("offerlist");
 		elm.setAttribute("onclick", "onPushSendAnswer();");
-		elm.setAttribute("value", JSON.parse(m.data)["_uuid"]);
+		elm.setAttribute("value", uuid);
 		offerList.appendChild(elm);
+		_callerinfo.add(uuid, sdp);
 	}
 }
 
-_msclient.setOnMessage(onMessage);
+
+
 //-->
 </script>
 </header>
 <body>
-<label id="uuid">uuid_value</label>
-<div>wssample</div>
+<label id="uuid">uuid_value</label><br><br>
+
+<button id="join" onclick="onPushSendJoin();">join network(server)</button><br><br>
+
 <button id="sendOffer" onclick="onPushSendOffer();">sendOffer</button><br><br>
-<button id="sendAnswer" onclick="onPushSendAnswer();">sendAnswer</button><br><br>
+
+<button id="sendOffer" onclick="onPushSendHello();">sendHello</button><br><br>
 
 <div id="offerlist">
 <label>Offer</label><br>
-
 </div>
+
+<div id="peerlist">
+<label>Connected</label><br>
+</div>
+
 </body>
 </html>
 

@@ -56,6 +56,8 @@ var SignalServer = function SignalServer() {
 					v["_sdp"] = sdp;
 					v["_uuid"] = myuuid;
 					_own.uniMessage(touuid, JSON.stringify(v));
+				} else if(type =="join"){
+					_own.userInfos.add(myuuid, "sdp", "name", websocket);					
 				}
 			});
 		});
