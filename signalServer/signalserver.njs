@@ -5,12 +5,12 @@ var UserInfo = require("./userinfo.njs");
 var UUID = require("./uuid.njs");
 
 var SignalServer = function SignalServer() {
-	this.httpServer = null;
-	this.wsserverSocket = null;	
-	this.userInfos = new UserInfo();
+	this.mHttpServer = null;
+	this.mWsserverSocket = null;	
+	this.mUserInfos = new UserInfo();
 
 	SignalServer.prototype.startServer = function(host, port) {
-		this.httpServer = HTTP.createServer(function (req, res) {
+		this.mHttpServer = HTTP.createServer(function (req, res) {
 			console.log("onRequest="+req.url);
 			try {
 				var path = req.url.substring(1);
@@ -29,8 +29,8 @@ var SignalServer = function SignalServer() {
 
 	SignalServer.prototype.startWSServer = function() {
 		var _own = this;
-		this.wsserverSocket = new WSServer({httpServer: this.httpServer});
-		this.wsserverSocket.on('request', function(req){
+		this.mWsserverSocket = new WSServer({httpServer: this.mHttpServer});
+		this.mWsserverSocket.on('request', function(req){
 			console.log("on:"+req);
 			var websocket = req.accept(null, req.origin);
 			websocket.on('message', function(mes) {
@@ -43,7 +43,7 @@ var SignalServer = function SignalServer() {
 				console.log("sdp:"+sdp);
 				console.log("uuid:"+myuuid);
 				if(type === "offer") {
-					_own.userInfos.add(myuuid, sdp, "name", websocket)
+					_own.mUserInfos.add(myuuid, sdp, "name", websocket)
 					var v = {}
 					v["_type"] = type;
 					v["_sdp"] = sdp;
@@ -58,7 +58,7 @@ var SignalServer = function SignalServer() {
 					v["_uuid"] = myuuid;
 					_own.uniMessage(touuid, JSON.stringify(v));
 				} else if(type =="join"){
-					_own.userInfos.add(myuuid, "sdp", "name", websocket);
+					_own.mUserInfos.add(myuuid, "sdp", "name", websocket);
 					var v = {}
 					v["_type"] = "join";
 					v["_uuid"] = myuuid;
@@ -71,11 +71,11 @@ var SignalServer = function SignalServer() {
 
 	SignalServer.prototype.broadcastMessage = function(_message) {
 		console.log("----broadcast----");
-		this.userInfos.show();
-		var keys = this.userInfos.keys();
+		this.mUserInfos.show();
+		var keys = this.mUserInfos.keys();
 		while(keys.length != 0) {
 			var key = keys.pop();
-			var socket = this.userInfos.get(key)["socket"];
+			var socket = this.mUserInfos.get(key)["socket"];
 			socket.send(_message);
 			console.log(_message);
 		}
@@ -85,7 +85,7 @@ var SignalServer = function SignalServer() {
 	SignalServer.prototype.uniMessage = function(touuid,_message) {
 		console.log("----uni----"+touuid);
 		try {
-			var socket = this.userInfos.get(touuid)["socket"];
+			var socket = this.mUserInfos.get(touuid)["socket"];
 			socket.send(_message);
 			console.log(_message);
 		} catch(e) {
