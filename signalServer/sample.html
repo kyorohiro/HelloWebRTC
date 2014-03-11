@@ -74,27 +74,27 @@ function sendAnswer(uuid, sdp) {
 }
 
 function onMessage(m) {
-	var type = JSON.parse(m.data)["_type"];
-	var sdp =  JSON.parse(m.data)["_sdp"];
-	var uuid = JSON.parse(m.data)["_uuid"];
-	var touuid = JSON.parse(m.data)["_touuid"];
-	console.log("--onMessage()[--]"+type+","+uuid+","+touuid);
+	var contentType = JSON.parse(m.data)["_contentType"];
+	var sdp  =  JSON.parse(m.data)["_content"];
+	var from = JSON.parse(m.data)["_from"];
+	var to   = JSON.parse(m.data)["_to"];
+	console.log("--onMessage()[--]"+contentType+","+to+","+from);
 
 
-	if("answer"===type) {
-		var _caller = _callerinfo.get(uuid).caller;
-		_caller.setTargetUUID(uuid);
+	if("answer"===contentType) {
+		var _caller = _callerinfo.get(from).caller;
+		_caller.setTargetUUID(from);
 		_caller.setRemoteSDP("answer", sdp);
-	} else if("offer" === type) {
+	} else if("offer" === contentType) {
 		// send answer
-		sendAnswer(uuid,sdp);
-	} else if("join" === type) {
+		sendAnswer(from, sdp);
+	} else if("join" === contentType) {
 		// create button
 		var elm = document.createElement("button");
-		elm.textContent = uuid;
+		elm.textContent = from;
 		var offerList = document.getElementById("offerlist");
 		elm.setAttribute("onclick", "onPushSendOffer();");
-		elm.setAttribute("value", uuid);
+		elm.setAttribute("value", from);
 		offerList.appendChild(elm);		
 	}
 }

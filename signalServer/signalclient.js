@@ -7,27 +7,30 @@ var SignalClient = function SignalClient(url) {
 
 	SignalClient.prototype.join = function(uuid, sdp) {
 		var v = {};
-		v["_type"] = "join";
-		v["_uuid"] = uuid;
+		v["_from"]        = uuid;
+		v["_messageType"] = "broadcast";
+		v["_contentType"] = "join";
+		v["_content"]     = "hello";
 		this.ws.send(JSON.stringify(v));
 	};
 
 	SignalClient.prototype.sendOffer = function(uuid, sdp, touuid) {
 		var v = {};
-		v["_type"] = "offer";
-		v["_sdp"] = sdp;
-		v["_uuid"] = uuid;
-		v["_touuid"] = touuid;
-		
+		v["_to"]          = touuid;
+		v["_from"]        = uuid;
+		v["_messageType"] = "unicast";
+		v["_contentType"] = "offer";
+		v["_content"]     = sdp;		
 		this.ws.send(JSON.stringify(v));
 	};
 
 	SignalClient.prototype.sendAnswer = function(uuid, sdp, touuid) {
 		var v = {};
-		v["_type"] = "answer";
-		v["_sdp"] = sdp;
-		v["_uuid"] = uuid;
-		v["_touuid"] = touuid;
+		v["_to"]          = touuid;
+		v["_from"]        = uuid;
+		v["_messageType"] = "unicast";
+		v["_contentType"] = "answer";
+		v["_content"]     = sdp;
 		this.ws.send(JSON.stringify(v));
 	};
 
@@ -40,11 +43,11 @@ var SignalClient = function SignalClient(url) {
 	this.ws.onmessage = function(m) {
 		console.log("--onMessage()["+"]"+m);
 		var parsedData = JSON.parse(m.data);
-		var type = parsedData["_type"];
-		if("join" === type) {
-			var uuid = parsedData["_uuid"];
+		var contentType = parsedData["_contentType"];
+		if("join" === contentType) {
+			var uuid = parsedData["_from"];
 			var v={};
-			v.name = parsedData["_name"];
+			v.name = "dummy";
 			_own.mList[uuid] = v;
 		}
 		if(_own.mOnMessage != null) {

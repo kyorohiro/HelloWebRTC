@@ -18,11 +18,9 @@ function UserInfo() {
 
 }
 
-function _add(uuid, sdp, name, socket) {
+function _add(uuid, socket) {
 	var v = {};
 	v.uuid = uuid;
-	v.sdp = sdp;
-	v.name = name;
 	v.socket = socket;
 	this.list[uuid] = v;
 }

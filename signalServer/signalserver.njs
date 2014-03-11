@@ -35,35 +35,27 @@ var SignalServer = function SignalServer() {
 			var websocket = req.accept(null, req.origin);
 			websocket.on('message', function(mes) {
 				console.log("mes:"+mes.utf8Data);
-				var type = JSON.parse(mes.utf8Data)["_type"];
-				var sdp = JSON.parse(mes.utf8Data)["_sdp"];
-				var myuuid = JSON.parse(mes.utf8Data)["_uuid"];
-				var touuid = JSON.parse(mes.utf8Data)["_touuid"];
-				console.log("type:"+type);
-				console.log("sdp:"+sdp);
-				console.log("uuid:"+myuuid);
-				if(type === "offer") {
-					_own.mUserInfos.add(myuuid, sdp, "name", websocket)
+				var contentType   = JSON.parse(mes.utf8Data)["_contentType"];
+				var messageType   = JSON.parse(mes.utf8Data)["_messageType"];
+				var content = JSON.parse(mes.utf8Data)["_content"];
+				var to      = JSON.parse(mes.utf8Data)["_to"];
+				var from    = JSON.parse(mes.utf8Data)["_from"];
+				console.log("to:"+to);
+				console.log("from:"+from);
+				_own.mUserInfos.add(from, websocket)
+
+				if(messageType === "unicast") {
 					var v = {}
-					v["_type"] = type;
-					v["_sdp"] = sdp;
-					v["_uuid"] = myuuid;
-					v["_touuid"] = touuid;
-					//
-					_own.uniMessage(touuid, JSON.stringify(v));
-				} else if(type =="answer"){
+					v["_contentType"]    = contentType;
+					v["_content"] = content;
+					v["_to"]      = to;
+					v["_from"]    = from;
+					_own.uniMessage(to, JSON.stringify(v));
+				} else if(messageType =="broadcast") {
 					var v = {}
-					v["_type"] = type;
-					v["_sdp"] = sdp;
-					v["_uuid"] = myuuid;
-					v["_touuid"] = touuid;
-					_own.uniMessage(touuid, JSON.stringify(v));
-				} else if(type =="join"){
-					_own.mUserInfos.add(myuuid, "sdp", "name", websocket);
-					var v = {}
-					v["_type"] = "join";
-					v["_uuid"] = myuuid;
-					v["_name"] = "name";
+					v["_contentType"] = contentType;
+					v["_content"]     = content;
+					v["_from"]        = from;
 					_own.broadcastMessage(JSON.stringify(v));
 				} 
 			});
@@ -83,10 +75,10 @@ var SignalServer = function SignalServer() {
 		console.log("----//broadcast-----");
 	}
 
-	SignalServer.prototype.uniMessage = function(touuid,_message) {
-		console.log("----uni----"+touuid);
+	SignalServer.prototype.uniMessage = function(to,_message) {
+		console.log("----uni----"+to);
 		try {
-			var socket = this.mUserInfos.get(touuid)["socket"];
+			var socket = this.mUserInfos.get(to)["socket"];
 			socket.send(_message);
 			console.log(_message);
 		} catch(e) {
