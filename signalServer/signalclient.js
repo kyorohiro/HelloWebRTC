@@ -5,32 +5,32 @@ var SignalClient = function SignalClient(url) {
 		this.ws.send("hello");
 	};
 
-	SignalClient.prototype.join = function(uuid, sdp) {
+	SignalClient.prototype.join = function(to) {
 		var v = {};
-		v["_from"]        = uuid;
+		v["_from"]        = to;
 		v["_messageType"] = "broadcast";
 		v["_contentType"] = "join";
 		v["_content"]     = "hello";
 		this.ws.send(JSON.stringify(v));
 	};
 
-	SignalClient.prototype.sendOffer = function(uuid, sdp, touuid) {
+	SignalClient.prototype.sendOffer = function(to, from, content) {
 		var v = {};
-		v["_to"]          = touuid;
-		v["_from"]        = uuid;
+		v["_to"]          = to;
+		v["_from"]        = from;
 		v["_messageType"] = "unicast";
 		v["_contentType"] = "offer";
-		v["_content"]     = sdp;		
+		v["_content"]     = content;
 		this.ws.send(JSON.stringify(v));
 	};
 
-	SignalClient.prototype.sendAnswer = function(uuid, sdp, touuid) {
+	SignalClient.prototype.sendAnswer = function(to, from, content) {
 		var v = {};
-		v["_to"]          = touuid;
-		v["_from"]        = uuid;
+		v["_to"]          = to;
+		v["_from"]        = from;
 		v["_messageType"] = "unicast";
 		v["_contentType"] = "answer";
-		v["_content"]     = sdp;
+		v["_content"]     = content;
 		this.ws.send(JSON.stringify(v));
 	};
 

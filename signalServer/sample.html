@@ -32,9 +32,9 @@ function onReceiveSDP(_caller, _type, sdp){
 	console.log("a="+uuid);
 	_callerinfo.show();
 	if("offer" === _type) {
-		_msclient.sendOffer(uuid, sdp, _caller.getTargetUUID());
+		_msclient.sendOffer(_caller.getTargetUUID(), uuid, sdp);
 	} else if("answer" === _type) {
-		_msclient.sendAnswer(uuid, sdp, _caller.getTargetUUID());
+		_msclient.sendAnswer(_caller.getTargetUUID(), uuid, sdp);
 	}
 	
 }
