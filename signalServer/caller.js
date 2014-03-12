@@ -2,7 +2,7 @@
 var Caller = function Caller(id) {
 	this.pc = null;
 	this.pcConfig = {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]};
-	this.pcConstraints = { 'optional': [{'DtlsSrtpKeyAgreement': true}, {'RtpDataChannels': true }] };
+	this.pcConstraints = { 'optional': [{'RtpDataChannels': true }] };
 	this.mMyUUID = id;
 	this.mTargetUUID = "";
 	this.mOnReceiveSDP = null;
