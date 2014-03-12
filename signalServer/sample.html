@@ -6,27 +6,27 @@
 <script src="callerinfo.js"></script>
 <script type="text/javascript">
 <!--
-var _msclient = null;
-var _callerinfo = new CallerInfo();
+var _mSignalClient = null;
+var _mCallerInfos = new CallerInfo();
+var _mMyUUID = "";
 
 window.onload = function() {
-	var uuid = document.getElementById("uuid").textContent;
-	_msclient = new SignalClient("ws://localhost:8080");
-	_msclient.setOnMessage(onMessage);
+	_mMyUUID = document.getElementById("uuid").textContent;
+	_mSignalClient = new SignalClient("ws://localhost:8080");
+	_mSignalClient.setOnMessage(onMessage);
 }
 
 function onPushSendJoin() {
-	var uuid = document.getElementById("uuid").textContent;
-	console.log("join():uuid="+uuid);
-	_msclient.join(uuid);	
+	console.log("join():uuid="+_mMyUUID);
+	_mSignalClient.join(_mMyUUID);	
 }
 
 function onPushSendHello() {
     console.log("sendHello()");
-    var keys = _callerinfo.keys();
+    var keys = _mCallerInfos.keys();
     while(keys.length != 0) {
     	var key = keys.pop();
-    	var _caller = _callerinfo.get(key).caller;
+    	var _caller = _mCallerInfos.get(key).caller;
    	    console.log("sendHello() " + key);
     	_caller.sendHello();
     }
@@ -38,10 +38,9 @@ function onPushSendOffer() {
     sendOffer(uuid);
 }
 
-
 function sendOffer(uuid) {
     var _caller = new Caller(uuid);
-    _callerinfo.add(uuid, _caller);
+    _mCallerInfos.add(uuid, _caller);
     _caller.setTargetUUID(uuid);
     _caller.setOnReceiveSDP(onReceiveSDP);
     _caller.createPeerConnection();
@@ -51,7 +50,7 @@ function sendOffer(uuid) {
 function sendAnswer(uuid, sdp) {
     console.log("+++sendAnswer");
     var _caller = new Caller(uuid);
-    _callerinfo.add(uuid, _caller);
+    _mCallerInfos.add(uuid, _caller);
 	_caller.setTargetUUID(uuid);
 	_caller.setOnReceiveSDP(onReceiveSDP);
     _caller.createPeerConnection();
@@ -60,7 +59,7 @@ function sendAnswer(uuid, sdp) {
 }
 
 function setRemoteSdp(type, uuid, sdp) {
-	var _caller = _callerinfo.get(uuid).caller;
+	var _caller = _mCallerInfos.get(uuid).caller;
 	_caller.setTargetUUID(uuid);
 	_caller.setRemoteSDP(type, sdp);
 }
@@ -98,11 +97,11 @@ function onReceiveSDP(_caller, _type, sdp){
 	console.log(""+sdp+"");
 	console.log("##########");
 	var uuid = document.getElementById("uuid").textContent;
-	_callerinfo.show();
+	_mCallerInfos.show();
 	if("offer" === _type) {
-		_msclient.sendOffer(_caller.getTargetUUID(), uuid, sdp);
+		_mSignalClient.sendOffer(_caller.getTargetUUID(), uuid, sdp);
 	} else if("answer" === _type) {
-		_msclient.sendAnswer(_caller.getTargetUUID(), uuid, sdp);
+		_mSignalClient.sendAnswer(_caller.getTargetUUID(), uuid, sdp);
 	}	
 }
 
