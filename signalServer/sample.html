@@ -39,6 +39,7 @@ function onPushSendOffer() {
 }
 
 function sendOffer(uuid) {
+    console.log("+++sendOffer");
     var _caller = new Caller(uuid);
     _mCallerInfos.add(uuid, _caller);
     _caller.setTargetUUID(uuid);
