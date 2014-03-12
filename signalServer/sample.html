@@ -14,29 +14,11 @@ window.onload = function() {
 	_msclient = new SignalClient("ws://localhost:8080");
 	_msclient.setOnMessage(onMessage);
 }
+
 function onPushSendJoin() {
 	var uuid = document.getElementById("uuid").textContent;
 	console.log("join():uuid="+uuid);
 	_msclient.join(uuid);	
-}
-
-function onReceiveSDP(_caller, _type, sdp){
-	console.log("##########");
-	console.log("##########");
-	console.log("type="+_type+"");
-	console.log("#####SDP#####");
-	console.log(""+sdp+"");
-	console.log("##########");
-	console.log("##########");
-	var uuid = document.getElementById("uuid").textContent;
-	console.log("a="+uuid);
-	_callerinfo.show();
-	if("offer" === _type) {
-		_msclient.sendOffer(_caller.getTargetUUID(), uuid, sdp);
-	} else if("answer" === _type) {
-		_msclient.sendAnswer(_caller.getTargetUUID(), uuid, sdp);
-	}
-	
 }
 
 function onPushSendHello() {
@@ -53,6 +35,11 @@ function onPushSendHello() {
 function onPushSendOffer() {
     console.log("push send button"+event.srcElement.uuid);
     var uuid = event.srcElement.value;
+    sendOffer(uuid);
+}
+
+
+function sendOffer(uuid) {
     var _caller = new Caller(uuid);
     _callerinfo.add(uuid, _caller);
     _caller.setTargetUUID(uuid);
@@ -60,7 +47,6 @@ function onPushSendOffer() {
     _caller.createPeerConnection();
     _caller.createOffer();
 }
-
 
 function sendAnswer(uuid, sdp) {
     console.log("+++sendAnswer");
@@ -73,6 +59,14 @@ function sendAnswer(uuid, sdp) {
 	_caller.createAnswer();
 }
 
+function setRemoteSdp(type, uuid, sdp) {
+	var _caller = _callerinfo.get(uuid).caller;
+	_caller.setTargetUUID(uuid);
+	_caller.setRemoteSDP(type, sdp);
+}
+
+//
+// receive message from signal server
 function onMessage(m) {
 	var contentType = JSON.parse(m.data)["_contentType"];
 	var sdp  =  JSON.parse(m.data)["_content"];
@@ -80,11 +74,8 @@ function onMessage(m) {
 	var to   = JSON.parse(m.data)["_to"];
 	console.log("--onMessage()[--]"+contentType+","+to+","+from);
 
-
 	if("answer"===contentType) {
-		var _caller = _callerinfo.get(from).caller;
-		_caller.setTargetUUID(from);
-		_caller.setRemoteSDP("answer", sdp);
+		setRemoteSdp("answer", from, sdp);
 	} else if("offer" === contentType) {
 		// send answer
 		sendAnswer(from, sdp);
@@ -99,6 +90,21 @@ function onMessage(m) {
 	}
 }
 
+//
+// receive sdp info from webrtv
+function onReceiveSDP(_caller, _type, sdp){
+	console.log("##########");
+	console.log("type="+_type+"");
+	console.log(""+sdp+"");
+	console.log("##########");
+	var uuid = document.getElementById("uuid").textContent;
+	_callerinfo.show();
+	if("offer" === _type) {
+		_msclient.sendOffer(_caller.getTargetUUID(), uuid, sdp);
+	} else if("answer" === _type) {
+		_msclient.sendAnswer(_caller.getTargetUUID(), uuid, sdp);
+	}	
+}
 
 
 //-->
