@@ -21,16 +21,6 @@ function onPushSendJoin() {
 	_mSignalClient.join(_mMyUUID);	
 }
 
-function onPushSendHello() {
-    console.log("sendHello()");
-    var keys = _mCallerInfos.keys();
-    while(keys.length != 0) {
-    	var key = keys.pop();
-    	var _caller = _mCallerInfos.get(key).caller;
-   	    console.log("sendHello() " + key);
-    	_caller.sendHello();
-    }
-}
 
 function onPushSendOffer() {
     console.log("push send button"+event.srcElement.uuid);
@@ -38,96 +28,19 @@ function onPushSendOffer() {
     sendOffer(uuid);
 }
 
-function sendOffer(uuid) {
-    console.log("+++sendOffer");
-    var _caller = new Caller(uuid);
-    _mCallerInfos.add(uuid, _caller);
-    _caller.setTargetUUID(uuid);
-    _caller.setOnReceiveSDP(onReceiveSDP);
-    _caller.createPeerConnection();
-    _caller.createOffer();
-}
-
-function sendAnswer(uuid, sdp) {
-    console.log("+++sendAnswer");
-    var _caller = new Caller(uuid);
-    _mCallerInfos.add(uuid, _caller);
-	_caller.setTargetUUID(uuid);
-	_caller.setOnReceiveSDP(onReceiveSDP);
-    _caller.createPeerConnection();
-	_caller.setRemoteSDP("offer", sdp);
-	_caller.createAnswer();
-}
-
-function setRemoteSdp(type, uuid, sdp) {
-	var _caller = _mCallerInfos.get(uuid).caller;
-	_caller.setTargetUUID(uuid);
-	_caller.setRemoteSDP(type, sdp);
-}
-
-//
-// receive message from signal server
-function onMessage(m) {
-	var contentType = JSON.parse(m.data)["_contentType"];
-	var sdp  =  JSON.parse(m.data)["_content"];
-	var from = JSON.parse(m.data)["_from"];
-	var to   = JSON.parse(m.data)["_to"];
-	console.log("--onMessage()[--]"+contentType+","+to+","+from);
-
-	if("answer"===contentType) {
-		setRemoteSdp("answer", from, sdp);
-	} else if("offer" === contentType) {
-		// send answer
-		sendAnswer(from, sdp);
-	} else if("join" === contentType) {
-		// create button
-		var elm = document.createElement("button");
-		elm.textContent = from;
-		var offerList = document.getElementById("offerlist");
-		elm.setAttribute("onclick", "onPushSendOffer();");
-		elm.setAttribute("value", from);
-		offerList.appendChild(elm);		
-	}
-}
-
-//
-// receive sdp info from webrtv
-function onReceiveSDP(_caller, _type, sdp){
-	console.log("##########");
-	console.log("type="+_type+"");
-	console.log(""+sdp+"");
-	console.log("##########");
-	var uuid = document.getElementById("uuid").textContent;
-	_mCallerInfos.show();
-	if("offer" === _type) {
-		_mSignalClient.sendOffer(_caller.getTargetUUID(), uuid, sdp);
-	} else if("answer" === _type) {
-		_mSignalClient.sendAnswer(_caller.getTargetUUID(), uuid, sdp);
-	}	
-}
-
-
 //-->
 </script>
 </header>
 <body>
 <label id="uuid">uuid_value</label><br><br>
-
 <button id="join" onclick="onPushSendJoin();">join network(server)</button><br><br>
-<button id="sendOffer" onclick="onPushSendHello();">sendHello</button><br><br>
+<button id="sendOffer" onclick="onPushSendOffer();">sendHello</button><br><br>
 
 <br>
 <div id="offerlist">
 <h3>[PeerList]</h3>
 </div>
 
-
-<br>
-<h3>[Usage]</h3>
-<div>1. push join network button</div>
-<div>2. push peer list button</div>
-<div>3. push send Hello button</div>
-<div>show "hello" on console</div>
 
 </body>
 </html>
