@@ -41,11 +41,11 @@ var SignalClient = function SignalClient(url) {
 
 	var _own = this;
 	this.ws.onmessage = function(m) {
-		console.log("--onMessage()["+"]"+m);
 		var parsedData = JSON.parse(m.data);
 		var contentType = parsedData["_contentType"];
+		var uuid = parsedData["_from"];
+		console.log("--onSignalClient#WS#OnMessage():"+contentType+","+uuid);
 		if("join" === contentType) {
-			var uuid = parsedData["_from"];
 			var v={};
 			v.name = "dummy";
 			_own.mList[uuid] = v;
