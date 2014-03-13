@@ -46,7 +46,7 @@ function SignalPeer(initialServerUrl) {
 	    console.log("+++sendOffer");
 	    this.mPeerList.create(uuid)
 	    .setTargetUUID(uuid)
-	    .setOnReceiveSDP(this.onLocalSDP)
+	    .setOnReceiveSDP(this.onReceiveMessageFromStunServer)
 	    .createPeerConnection()
 	    .createOffer();
 	};
