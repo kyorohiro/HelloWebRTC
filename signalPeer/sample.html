@@ -3,30 +3,20 @@
 <title>sample</title>
 <script src="signalclient.js"></script>
 <script src="caller.js"></script>
-<script src="callerinfo.js"></script>
+<script src="signalpeer.js"></script>
 <script type="text/javascript">
 <!--
-var _mSignalClient = null;
-var _mCallerInfos = new CallerInfo();
-var _mMyUUID = "";
+var _mSignalPeer = null;
 
 window.onload = function() {
-	_mMyUUID = document.getElementById("uuid").textContent;
-	_mSignalClient = new SignalClient("ws://localhost:8080");
-	_mSignalClient.setOnMessage(onMessage);
+	_mSignalPeer = new SignalPeer("ws://localhost:8080");
 }
 
 function onPushSendJoin() {
-	console.log("join():uuid="+_mMyUUID);
-	_mSignalClient.join(_mMyUUID);	
+	console.log("onPushSendJoin()");
+    _mSignalPeer.joinNetwork();
 }
 
-
-function onPushSendOffer() {
-    console.log("push send button"+event.srcElement.uuid);
-    var uuid = event.srcElement.value;
-    sendOffer(uuid);
-}
 
 //-->
 </script>

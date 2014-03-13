@@ -59,4 +59,4 @@ var SignalClient = function SignalClient(url) {
 		console.log("--onClose()"+m);
 	};
 };
-try{module.exports = SignalClient;} catch(e){}
+

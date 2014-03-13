@@ -52,6 +52,7 @@ var Caller = function Caller(id) {
 		} catch (e) {
 			alert("can not create peer connection."+e+"");
 		}
+		return this;
 	};
 
 	Caller.prototype.createOffer = function () {
@@ -68,6 +69,7 @@ var Caller = function Caller(id) {
 							function (error) {console.log("+++onCreateSessionDescriptionError("+error+"\n");}
 					);
 				});
+		return this;
 	};
 
 	Caller.prototype.createAnswer = function () {
@@ -83,10 +85,12 @@ var Caller = function Caller(id) {
 							this.onSetLocalAndMessage,
 							function (error) {console.log("+++onCreateSessionDescriptionError("+error+"\n");}
 					);});
+		return this;
 	};
 
 	Caller.prototype.setOnReceiveSDP = function (onMessage) {
 		this.mOnReceiveSDP = onMessage;
+		return this;
 	}
 
 	Caller.prototype.setOutputRemoteSDP = _setRemoteSDPLogBuffer;
@@ -98,6 +102,7 @@ var Caller = function Caller(id) {
 		sd.type = _type;
 		sd.sdp = _sdp;
 		this.pc.setRemoteDescription(sd);
+		return this;
 	};
 
 	Caller.prototype.setChannelEvents = _setChannelEvents;

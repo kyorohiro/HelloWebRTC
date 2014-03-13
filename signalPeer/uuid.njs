@@ -11,4 +11,4 @@ function _getId() {
 	return s4()+s4()+"-"+s4()+"-"+s4()+"-"+s4()+"-"+s4()+s4()+s4();
 }
 
-module.exports = UUID;
+try{module.exports = UUID;}catch(e){;}
