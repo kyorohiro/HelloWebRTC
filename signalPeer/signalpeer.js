@@ -5,8 +5,7 @@ function SignalPeer(initialServerUrl) {
 	this.mUUID = UUID.getId();
 	this.mPeerList = new CallerInfo();
 	this.mSignalClient = new SignalClient(initialServerUrl);
-	this.mSignalClient.setOnMessage(this.onMessage);
-
+	this.mSignalClient.setOnMessage(this.onReceiveMessageFromInitServer);
 
 	//
 	// join network from initial server
@@ -16,7 +15,7 @@ function SignalPeer(initialServerUrl) {
 
 	//
 	// receive message from initialserver
-	this.onMessage = function(message) {
+	this.onReceiveMessageFromInitServer = function(message) {
 		var contentType = JSON.parse(m.data)["_contentType"];
 		var sdp         = JSON.parse(m.data)["_content"];
 		var from        = JSON.parse(m.data)["_from"];
@@ -26,7 +25,7 @@ function SignalPeer(initialServerUrl) {
 		}
 		else if ("offer" === contentType) {
 			mPeerList.create(to)
-			.setOnReceiveSDP(this.onLocalSDP)
+			.setOnReceiveSDP(this.onReceiveMessageFromStunServer)
 		    .createPeerConnection()
 			.setRemoteSDP("offer", sdp)
 			.createAnswer();
@@ -35,7 +34,7 @@ function SignalPeer(initialServerUrl) {
 
 	//
 	// receive message from stun server
-	this.onLocalSDP = function(caller, type, sdp) {
+	this.onReceiveMessageFromStunServer = function(caller, type, sdp) {
 		if("offer" === type) {
 			_mSignalClient.sendOffer(caller.getTargetUUID(), mUUID, sdp);
 		} else if("answer" === _type) {
