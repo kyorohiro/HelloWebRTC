@@ -30,7 +30,6 @@ function SignalPeer(initialServerUrl) {
 		v.to          = JSON.parse(message.data)["_to"];
 		console.log("###################init:"+v.contentType+","+v.from);
 		if ("join" === v.contentType) {
-			console.log("setE"+_this.mObserver);
 			_this.mObserver.onJoinNetwork(this, v);
 		} else if ("answer"=== v.contentType) {
 			_this.onReceiveAnswer(v)
@@ -87,7 +86,7 @@ function SignalPeer(initialServerUrl) {
 	    	var key = keys.pop();
 	    	var _caller = this.mPeerList.get(key).caller;
 	   	    console.log("sendHello() " + key);
-	    	_caller.sendHello();
+	    	_caller.sendHello(message);
 	    }
 	}
 
@@ -96,7 +95,7 @@ function SignalPeer(initialServerUrl) {
 		// list response peerlist
 		// unicast send message
 		//
-	    console.log("+++"+message);
+	    console.log("+++"+JSON.parse(message).content);
 	};
 
 

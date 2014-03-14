@@ -38,7 +38,11 @@ function onPushSendOffer() {
 
 function onPushSendHello() {
     console.log("onPushSendHello()");
-    _mSignalPeer.sendHello();
+ 	var v ={};
+ 	v.type = "message";
+ 	v.contentType = "text/plain";
+ 	v.content = "hello";
+    _mSignalPeer.sendHello(JSON.stringify(v));
 }
 
 //-->

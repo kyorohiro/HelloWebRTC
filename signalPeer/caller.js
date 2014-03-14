@@ -111,9 +111,9 @@ var Caller = function Caller(id) {
 };
 
 
-function _sendHello() {
-	console.log("+++sendHello()\n");
-	this.mDataChannel.send("hello");
+function _sendHello(message) {
+	console.log("+++sendHello()"+message+"\n");
+	this.mDataChannel.send(message);
 }
 
 
