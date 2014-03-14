@@ -7,9 +7,21 @@
 <script type="text/javascript">
 <!--
 var _mSignalPeer = null;
+var v = new function() {
+   this.onJoinNetwork = function(peer,v) {
+ 		// create button
+		var elm = document.createElement("button");
+		elm.textContent = v.from;
+		var offerList = document.getElementById("offerlist");
+		elm.setAttribute("onclick", "onPushSendOffer();");
+		elm.setAttribute("value", v.from);
+		offerList.appendChild(elm);		
+   };
+};
 
 window.onload = function() {
 	_mSignalPeer = new SignalPeer("ws://localhost:8080");
+	_mSignalPeer.setEventListener(v);
 }
 
 function onPushSendJoin() {
@@ -17,6 +29,11 @@ function onPushSendJoin() {
     _mSignalPeer.joinNetwork();
 }
 
+function onPushSendOffer() {
+    console.log("onPushSendOffer()"+event.srcElement.uuid);
+    var uuid = event.srcElement.value;
+    _mSignalPeer.sendOffer(uuid);
+}
 
 //-->
 </script>

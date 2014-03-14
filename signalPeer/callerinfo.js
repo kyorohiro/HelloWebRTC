@@ -9,7 +9,7 @@ function CallerInfo() {
 
 	CallerInfo.prototype.create = function(uuid) {
 	    var _caller = new Caller(uuid);
-	    _mCallerInfos.add(uuid, _caller);
+	    this.add(uuid, _caller);
 		_caller.setTargetUUID(uuid);
 		return _caller;
 	};

@@ -12,6 +12,7 @@ var Caller = function Caller(id) {
 
 	Caller.prototype.setTargetUUID = function(uuid) {
 		this.mTargetUUID = uuid;
+		return this;
 	};
 
 	Caller.prototype.getTargetUUID = function() {

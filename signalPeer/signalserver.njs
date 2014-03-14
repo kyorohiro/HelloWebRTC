@@ -16,9 +16,6 @@ var SignalServer = function SignalServer() {
 				var path = req.url.substring(1);
 				var file = Fs.readFileSync(path);
 				res.writeHead(200, {'Content-Type': 'text/html'});
-				if("sample.html" ===  path) {
-					file = String(file).replace("uuid_value", UUID.getId());
-				}
 				res.end(file);
 			} catch(e) {
 				console.log(""+e);
