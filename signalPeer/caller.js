@@ -16,6 +16,7 @@ var Caller = function Caller(id) {
 
 	Caller.prototype.setEventListener =function(observer) {
 		this.mObserver = observer;
+		return this;
 	};
 	Caller.prototype.setTargetUUID = function(uuid) {
 		this.mTargetUUID = uuid;

@@ -17,7 +17,10 @@ function SignalPeer(initialServerUrl) {
 
 	this.setEventListener = function(observer) {
 		_this.mObserver = observer;
+		return this;
 	};
+
+
 
 	//
 	// join network from initial server
@@ -63,6 +66,7 @@ function SignalPeer(initialServerUrl) {
 		_this.mPeerList.create(_this.mUUID, v.from)
 		.setTargetUUID(v.from)
 		.setOnReceiveSDP(_this.onReceiveMessageFromStunServer)
+		.setEventListener(_this.mPeerObserver)
 	    .createPeerConnection()
 		.setRemoteSDP("offer", v.sdp)
 		.createAnswer();
@@ -75,6 +79,7 @@ function SignalPeer(initialServerUrl) {
 	    _this.mPeerList.create(_this.mUUID,uuid)
 	    .setTargetUUID(uuid)
 	    .setOnReceiveSDP(_this.onReceiveMessageFromStunServer)
+   		.setEventListener(_this.mPeerObserver)
 	    .createPeerConnection()
 	    .createOffer();
 	};
@@ -95,7 +100,7 @@ function SignalPeer(initialServerUrl) {
 	    }
 	}
 
-	this.onMessageFromPeer = function(message) {
+	this.onMessageFromPeer = function(caller, message) {
 		//
 		// list response peerlist
 		// unicast send message
@@ -103,7 +108,9 @@ function SignalPeer(initialServerUrl) {
 	    console.log("+++"+JSON.parse(message).content);
 	    _this.mObserver.onReceiveMessage(_this, JSON.parse(message));
 	};
-
+	this.mPeerObserver = new (function() {
+		this.onReceiveMessage = _this.onMessageFromPeer;
+	});
 
 };
 
