@@ -10,8 +10,6 @@ function SignalPeer(initialServerUrl) {
 	this.mSignalClient = new SignalClient(initialServerUrl);
 	this.mObserver = {};
 
-	//
-	//
 	this.setEventListener = function(observer) {
 		_this.mObserver = observer;
 	};
@@ -30,20 +28,14 @@ function SignalPeer(initialServerUrl) {
 		v.sdp         = JSON.parse(message.data)["_content"];
 		v.from        = JSON.parse(message.data)["_from"];
 		v.to          = JSON.parse(message.data)["_to"];
-		console.log("###################init"+v.contentType+","+v.from);
+		console.log("###################init:"+v.contentType+","+v.from);
 		if ("join" === v.contentType) {
 			console.log("setE"+_this.mObserver);
 			_this.mObserver.onJoinNetwork(this, v);
 		} else if ("answer"=== v.contentType) {
-			_this.mPeerList.get(v.from).caller
-			.setRemoteSDP("answer", v.sdp);
+			_this.onReceiveAnswer(v)
 		} else if ("offer" === v.contentType) {
-			_this.mPeerList.create(_this.mUUID, v.from)
-			.setTargetUUID(v.from)
-			.setOnReceiveSDP(_this.onReceiveMessageFromStunServer)
-		    .createPeerConnection()
-			.setRemoteSDP("offer", v.sdp)
-			.createAnswer();
+			_this.sendAnswer(v);
 		}
 	};
 	this.mSignalClient.setOnMessage(this.onReceiveMessageFromInitServer);
@@ -51,7 +43,7 @@ function SignalPeer(initialServerUrl) {
 	//
 	// receive message from stun server
 	this.onReceiveMessageFromStunServer = function(caller, type, sdp) {
-		console.log("###################stun"+type+","+caller.getTargetUUID()+","+_this.mUUID);
+		console.log("###################stun:"+type+","+caller.getTargetUUID()+","+_this.mUUID);
 		if("offer" === type) {
 			_this.mSignalClient.sendOffer(caller.getTargetUUID(), _this.mUUID, sdp);
 		} else if("answer" === type) {
@@ -59,6 +51,21 @@ function SignalPeer(initialServerUrl) {
 		}
 	};
 
+
+	//
+	// if receive offer, then sendAnswer() and establish connection
+	this.sendAnswer = function(v) {
+	    console.log("+++sendAnswer:"+_this.mUUID+","+v.from);
+		_this.mPeerList.create(_this.mUUID, v.from)
+		.setTargetUUID(v.from)
+		.setOnReceiveSDP(_this.onReceiveMessageFromStunServer)
+	    .createPeerConnection()
+		.setRemoteSDP("offer", v.sdp)
+		.createAnswer();
+	};
+
+	//
+	// sendOffer() then, onReceiveAnswer()
 	this.sendOffer = function(uuid) {
 	    console.log("+++sendOffer:"+_this.mUUID+","+uuid);
 	    _this.mPeerList.create(_this.mUUID,uuid)
@@ -67,6 +74,11 @@ function SignalPeer(initialServerUrl) {
 	    .createPeerConnection()
 	    .createOffer();
 	};
+
+	this.onReceiveAnswer = function(v) {
+		_this.mPeerList.get(v.from).caller
+		.setRemoteSDP("answer", v.sdp);
+	}
 
 	this.sendHello = function(message) {
 	    console.log("sendHello()");
