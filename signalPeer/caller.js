@@ -10,6 +10,13 @@ var Caller = function Caller(id) {
 	this.mOutputMessage = "";
 	this.mDataChannel = null;
 
+	this.mObserver = new (function() {
+		this.onReceiveMessage = function(caller, message) {;}
+	});
+
+	Caller.prototype.setEventListener =function(observer) {
+		this.mObserver = observer;
+	};
 	Caller.prototype.setTargetUUID = function(uuid) {
 		this.mTargetUUID = uuid;
 		return this;
@@ -148,8 +155,9 @@ function _setChannelEvents() {
 	console.log("+++setChannelEvent()\n");
 	var _own = this;
 	this.mDataChannel.onmessage = function(event) {
-		console.log("onmessage:"+event.data);
-		_own.mOutputMessage.value = ""+event.data+"\n"+_own.mOutputMessage.value;
+		//console.log("onmessage:"+event.data);
+		//_own.mOutputMessage.value = ""+event.data+"\n"+_own.mOutputMessage.value;
+		_own.mObserver.onReceiveMessage(_own, event.data);
 	};
 	this.mDataChannel.onopen = function(event) {
 		console.log("onopen:"+event);

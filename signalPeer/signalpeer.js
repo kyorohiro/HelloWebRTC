@@ -8,7 +8,12 @@ function SignalPeer(initialServerUrl) {
 	this.mUUID = UUID.getId();
 	this.mPeerList = new CallerInfo();
 	this.mSignalClient = new SignalClient(initialServerUrl);
-	this.mObserver = {};
+	this.mObserver = new function() {
+		   this.onJoinNetwork = function(peer,v) {
+		   };
+		   this.onReceiveMessage = function(peer, v) {
+		   };
+	};
 
 	this.setEventListener = function(observer) {
 		_this.mObserver = observer;
@@ -96,6 +101,7 @@ function SignalPeer(initialServerUrl) {
 		// unicast send message
 		//
 	    console.log("+++"+JSON.parse(message).content);
+	    _this.mObserver.onReceiveMessage(_this, JSON.parse(message));
 	};
 
 

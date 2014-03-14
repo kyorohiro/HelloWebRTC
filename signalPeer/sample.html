@@ -17,6 +17,9 @@ var v = new function() {
 		elm.setAttribute("value", v.from);
 		offerList.appendChild(elm);		
    };
+   this.onReceiveMessage = function(peer, v) {
+   		console.log("onReceiveMessage:"+v);
+   };
 };
 
 window.onload = function() {
