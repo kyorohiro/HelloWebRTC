@@ -35,13 +35,19 @@ function onPushSendOffer() {
     _mSignalPeer.sendOffer(uuid);
 }
 
+
+function onPushSendHello() {
+    console.log("onPushSendHello()");
+    _mSignalPeer.sendHello();
+}
+
 //-->
 </script>
 </header>
 <body>
 <label id="uuid">uuid_value</label><br><br>
 <button id="join" onclick="onPushSendJoin();">join network(server)</button><br><br>
-<button id="sendOffer" onclick="onPushSendOffer();">sendHello</button><br><br>
+<button id="hello" onclick="onPushSendHello();">sendHello</button><br><br>
 
 <br>
 <div id="offerlist">

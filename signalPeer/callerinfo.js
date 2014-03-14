@@ -7,10 +7,9 @@ function CallerInfo() {
 		this.list[uuid] = v;
 	};
 
-	CallerInfo.prototype.create = function(uuid) {
-	    var _caller = new Caller(uuid);
-	    this.add(uuid, _caller);
-		_caller.setTargetUUID(uuid);
+	CallerInfo.prototype.create = function(myUuid, targetUuid) {
+	    var _caller = new Caller(myUuid);
+	    this.add(targetUuid, _caller);
 		return _caller;
 	};
 
