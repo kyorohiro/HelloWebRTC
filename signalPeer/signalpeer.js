@@ -147,10 +147,17 @@ function SignalPeer(initialServerUrl) {
 			node1:"xx",
 			node2:"xx"
 		};
-	}
+	};
 	
-	// sendAnswer() {
-	
-
+	// 
+	this.sendOfferPeer = function() {
+	};
+	this.onRecvOfferPeer = function() {
+	};
+	// 
+	this.sendAnswerPeer = function() {
+	};
+	this.onRecvAnswerPeer = function() {
+	};
 };
 
