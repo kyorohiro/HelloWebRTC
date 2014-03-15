@@ -8,6 +8,8 @@ function SignalPeer(initialServerUrl) {
 	this.mUUID = UUID.getId();
 	this.mPeerList = new CallerInfo();
 	this.mSignalClient = new SignalClient(initialServerUrl);
+	//
+	// #interface 
 	this.mObserver = new function() {
 		   this.onJoinNetwork = function(peer,v) {
 		   };
@@ -21,6 +23,9 @@ function SignalPeer(initialServerUrl) {
 	};
 
 
+	this.getUUID = function() {
+		return this.mUUID;
+	};
 
 	//
 	// join network from initial server
@@ -36,7 +41,7 @@ function SignalPeer(initialServerUrl) {
 		v.sdp         = JSON.parse(message.data)["_content"];
 		v.from        = JSON.parse(message.data)["_from"];
 		v.to          = JSON.parse(message.data)["_to"];
-		console.log("###################init:"+v.contentType+","+v.from);
+		console.log("###################init sv:"+v.contentType+","+v.from);
 		if ("join" === v.contentType) {
 			_this.mObserver.onJoinNetwork(this, v);
 		} else if ("answer"=== v.contentType) {
@@ -50,7 +55,7 @@ function SignalPeer(initialServerUrl) {
 	//
 	// receive message from stun server
 	this.onReceiveMessageFromStunServer = function(caller, type, sdp) {
-		console.log("###################stun:"+type+","+caller.getTargetUUID()+","+_this.mUUID);
+		console.log("###################stun sv:"+type+","+caller.getTargetUUID()+","+_this.mUUID);
 		if("offer" === type) {
 			_this.mSignalClient.sendOffer(caller.getTargetUUID(), _this.mUUID, sdp);
 		} else if("answer" === type) {
@@ -101,16 +106,49 @@ function SignalPeer(initialServerUrl) {
 	}
 
 	this.onMessageFromPeer = function(caller, message) {
-		//
-		// list response peerlist
-		// unicast send message
-		//
-	    console.log("+++"+JSON.parse(message).content);
-	    _this.mObserver.onReceiveMessage(_this, JSON.parse(message));
+	    console.log("###################peer:", JSON.parse(message).from);
+	    var p2pMes = JSON.parse(message);
+	    if("query" === p2pMes.type) {
+	    	if("getpeer" === p2pMes.command) {
+	    		_this.onRecvGetPeers(p2pMes);
+	    	}
+	    }
+	    _this.mObserver.onReceiveMessage(_this, v);
 	};
+
 	this.mPeerObserver = new (function() {
 		this.onReceiveMessage = _this.onMessageFromPeer;
 	});
+
+	//---
+	// p2p message
+	//---
+	
+	// find peer
+	this.sendFindNode = function (uuid) {
+		var mes = {};
+		mes.type = "query";
+		mes.command = "findnode";
+		mes.id = UUID.getId();
+		mes.target = this.mUUID;
+		mes.node = {
+			node1:"xx",
+			node2:"xx"
+		};
+	}
+
+	//
+	// 
+	this.onRecvGetPeers = function (caller, v) {
+		var mes = v.content;
+		mes.type = "response";
+		mes.id = v.id;
+		mes.node = {
+			node1:"xx",
+			node2:"xx"
+		};
+	}
+	
 
 };
 

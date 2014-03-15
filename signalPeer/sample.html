@@ -45,6 +45,7 @@ function onPushSendHello() {
  	v.type = "message";
  	v.contentType = "text/plain";
  	v.content = "hello";
+ 	v.from = _mSignalPeer.getUUID();
     _mSignalPeer.sendHello(JSON.stringify(v));
 }
 
