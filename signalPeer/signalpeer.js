@@ -101,7 +101,7 @@ function SignalPeer(initialServerUrl) {
 	    	var key = keys.pop();
 	    	var _caller = this.mPeerList.get(key).caller;
 	   	    console.log("sendHello() " + key);
-	    	_caller.sendHello(message);
+	    	_caller.sendMessage(message);
 	    }
 	}
 

@@ -104,7 +104,12 @@ var Caller = function Caller(id) {
 
 	Caller.prototype.setOutputRemoteSDP = _setRemoteSDPLogBuffer;
 	Caller.prototype.setOutputMessage = _setMessageLogBuffer;
-	Caller.prototype.sendHello = _sendHello;
+
+	Caller.prototype.sendMessage = function (message) {
+		console.log("+++sendHello()"+message+"\n");
+		this.mDataChannel.send(message);
+	};
+
 	Caller.prototype.setRemoteSDP = function(_type, _sdp) {
 		console.log("+++setRemoteSDP()"+_type+","+_sdp+"\n");
 		var sd = new RTCSessionDescription();
@@ -118,11 +123,6 @@ var Caller = function Caller(id) {
 	arguments.callee.iceType = _iceCandidateType;
 };
 
-
-function _sendHello(message) {
-	console.log("+++sendHello()"+message+"\n");
-	this.mDataChannel.send(message);
-}
 
 
 function _setRemoteSDPLogBuffer(output) {
