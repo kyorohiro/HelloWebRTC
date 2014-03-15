@@ -130,7 +130,7 @@ function SignalPeer(initialServerUrl) {
 		mes.type = "query";
 		mes.command = "findnode";
 		mes.id = UUID.getId();
-		mes.target = this.mUUID;
+		mes.target = this.mUUID;s
 		mes.node = {
 			node1:"xx",
 			node2:"xx"
@@ -139,7 +139,7 @@ function SignalPeer(initialServerUrl) {
 
 	//
 	// 
-	this.onRecvGetPeers = function (caller, v) {
+	this.onRecvFindNode = function (caller, v) {
 		var mes = v.content;
 		mes.type = "response";
 		mes.id = v.id;
@@ -148,6 +148,8 @@ function SignalPeer(initialServerUrl) {
 			node2:"xx"
 		};
 	}
+	
+	// sendAnswer() {
 	
 
 };
