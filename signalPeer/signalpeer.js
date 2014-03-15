@@ -99,14 +99,15 @@ function SignalPeer(initialServerUrl) {
 	    var keys = this.mPeerList.keys();
 	    while(keys.length != 0) {
 	    	var key = keys.pop();
-	    	var _caller = this.mPeerList.get(key).caller;
-	   	    console.log("sendHello() " + key);
-	    	_caller.sendMessage(message);
+	    	_this.sendFindNode(key);
+	    	//var _caller = this.mPeerList.get(key).caller;
+	   	    //console.log("sendHello() " + key);
+	    	//_caller.sendMessage(message);
 	    }
 	}
 
 	this.onMessageFromPeer = function(caller, message) {
-	    console.log("###################peer:", JSON.parse(message).from);
+	    console.log("###################peer:"+ JSON.parse(message).from);
 	    var p2pMes = JSON.parse(message);
 	    if("query" === p2pMes.type) {
 	    	if("getpeer" === p2pMes.command) {
@@ -130,11 +131,13 @@ function SignalPeer(initialServerUrl) {
 		mes.type = "query";
 		mes.command = "findnode";
 		mes.id = UUID.getId();
-		mes.target = this.mUUID;s
+		mes.from = this.mUUID;
+		mes.target = uuid;
 		mes.node = {
 			node1:"xx",
 			node2:"xx"
 		};
+		this.mPeerList.get(uuid).caller.sendMessage(JSON.stringify(mes));
 	}
 
 	//
