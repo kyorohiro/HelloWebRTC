@@ -12,14 +12,26 @@ function SignalPeer(initialServerUrl) {
 	//
 	// #interface 
 	this.mObserver = new function() {
+		   var _t = this;
+		   this.mWork = null;
 		   this.onJoinNetwork = function(peer,v) {
+			   if(_t.mWork != null) {
+				   _t.mWork.onJoinNetwork(peer, v);
+			   }
 		   };
 		   this.onReceiveMessage = function(peer, v) {
+			   _this.onMessageFromPeer(peer, v);
+			   if(_t.mWork != null) {
+				   _t.mWork.onReceiveMessage(peer, v);
+			   }
 		   };
+		   this.setDecorteWork = function(work) {
+			   _t.mWork = work;
+		   }
 	};
 
 	this.setEventListener = function(observer) {
-		_this.mObserver = observer;
+		_this.mObserver.setDecorteWork(observer);
 		return this;
 	};
 
@@ -72,7 +84,7 @@ function SignalPeer(initialServerUrl) {
 		_this.mPeerList.create(_this.mUUID, v.from)
 		.setTargetUUID(v.from)
 		.setOnReceiveSDP(_this.onReceiveMessageFromStunServer)
-		.setEventListener(_this.mPeerObserver)
+		.setEventListener(_this.mObserver)
 	    .createPeerConnection()
 		.setRemoteSDP("offer", v.sdp)
 		.createAnswer();
@@ -85,7 +97,7 @@ function SignalPeer(initialServerUrl) {
 	    _this.mPeerList.create(_this.mUUID,uuid)
 	    .setTargetUUID(uuid)
 	    .setOnReceiveSDP(_this.onReceiveMessageFromStunServer)
-   		.setEventListener(_this.mPeerObserver)
+   		.setEventListener(_this.mObserver)
 	    .createPeerConnection()
 	    .createOffer();
 	};
@@ -112,12 +124,8 @@ function SignalPeer(initialServerUrl) {
 	    		_this.onRecvGetPeers(p2pMes);
 	    	}
 	    }
-	    _this.mObserver.onReceiveMessage(caller,message);
 	};
 
-	this.mPeerObserver = new (function() {
-		this.onReceiveMessage = _this.onMessageFromPeer;
-	});
 
 	//---
 	// p2p message
