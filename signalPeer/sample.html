@@ -13,12 +13,13 @@ var v = new function() {
 		var elm = document.createElement("button");
 		elm.textContent = v.from;
 		var offerList = document.getElementById("offerlist");
-		elm.setAttribute("onclick", "onPushSendOffer();");
+		elm.setAttribute("onclick", "onPushSendOffer(\"init\");");
 		elm.setAttribute("value", v.from);
 		offerList.appendChild(elm);		
    };
    this.onReceiveMessage = function(peer, v) {
-   		console.log("onReceiveMessage:"+v);
+//   		var p2pMes = JSON.parse(v);
+   		console.log("onReceiveMessage:------------------------");
    };
 };
 
@@ -32,7 +33,7 @@ function onPushSendJoin() {
     _mSignalPeer.joinNetwork();
 }
 
-function onPushSendOffer() {
+function onPushSendOffer(type) {
     console.log("onPushSendOffer()"+event.srcElement.uuid);
     var uuid = event.srcElement.value;
     _mSignalPeer.sendOffer(uuid);

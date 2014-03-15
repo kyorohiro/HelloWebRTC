@@ -19,15 +19,7 @@ function SignalPeer(initialServerUrl) {
 	};
 
 	this.setEventListener = function(observer) {
-		_this.mObserver = new function() {
-			   this.onJoinNetwork = function(peer,v) {
-				   observer.onJoinNetwork(peer,v);
-			   };
-			   this.onReceiveMessage = function(peer, v) {
-				   _this.onMessageFromPeer(peer,v);
-				   observer.onReceiveMessage(peer,v);
-			   };
-		};
+		_this.mObserver = observer;
 		return this;
 	};
 
@@ -109,9 +101,6 @@ function SignalPeer(initialServerUrl) {
 	    while(keys.length != 0) {
 	    	var key = keys.pop();
 	    	_this.sendFindNode(key);
-	    	//var _caller = this.mPeerList.get(key).caller;
-	   	    //console.log("sendHello() " + key);
-	    	//_caller.sendMessage(message);
 	    }
 	}
 
@@ -119,10 +108,11 @@ function SignalPeer(initialServerUrl) {
 	    console.log("###################peer:"+JSON.parse(message).from);
 	    var p2pMes = JSON.parse(message);
 	    if("query" === p2pMes.type) {
-	    	if("getpeer" === p2pMes.command) {
+	    	if("findpeer" === p2pMes.command) {
 	    		_this.onRecvGetPeers(p2pMes);
 	    	}
 	    }
+	    _this.mObserver.onReceiveMessage(caller,message);
 	};
 
 	this.mPeerObserver = new (function() {
