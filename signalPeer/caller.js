@@ -95,7 +95,7 @@ var Caller = function Caller(id) {
 							sessionDescription, 
 							function() {
 								console.log("+++onSetSessionDescriptionSuccess.");
-								_own.mObserver.onReceiveMessageFromStunServer(_own, _own.pc.localDescription.type, _own.pc.localDescription.sdp);
+								_own.mObserver.onSetSessionDescription(_own, _own.pc.localDescription.type, _own.pc.localDescription.sdp);
 						    },
 							function(error) {console.log("+++onSetSessionDescriptionError" + error.toString());}
 					);});
