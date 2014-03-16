@@ -9,9 +9,11 @@
 var _mSignalPeer = null;
 var v = new function() {
    this.onJoinNetwork = function(peer,v) {
+   		console.log("joinNetwork():------------------------");
+  
  		// create button
 		var elm = document.createElement("button");
-		elm.textContent = v.from;
+		elm.textContent = "[server] "+v.from;
 		var offerList = document.getElementById("offerlist");
 		elm.setAttribute("onclick", "onPushSendOffer(\"init\");");
 		elm.setAttribute("value", v.from);
