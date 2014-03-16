@@ -22,7 +22,7 @@ function SignalPeer(initialServerUrl) {
 		   this.onIceCandidate = function(caller,event) {
 			   _this.mSignalClient.sendCandidate(caller.getTargetUUID(), _this.mUUID, event.candidate);
 		   };
-		   this.onReceiveMessageFromStunServer = function(caller, type, sdp) {
+		   this.onSetSessionDescription = function(caller, type, sdp) {
 				console.log("###################stun sv:"+type+","+caller.getTargetUUID()+","+_this.mUUID);
 				if("offer" === type) {
 					_this.mSignalClient.sendOffer(caller.getTargetUUID(), _this.mUUID, sdp);

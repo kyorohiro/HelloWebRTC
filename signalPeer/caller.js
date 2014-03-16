@@ -1,5 +1,6 @@
 //new Caller
 var Caller = function Caller(id) {
+	var _own = this;
 	this.pc = null;
 	this.pcConfig = {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]};
 	this.pcConstraints = { 'optional': [{'DtlsSrtpKeyAgreement': true}, {'RtpDataChannels': true }] };
@@ -10,7 +11,7 @@ var Caller = function Caller(id) {
 	this.mObserver = new (function() {
 		this.onReceiveMessage = function(caller, message) {;}
 		this.onIceCandidate = function(caller,event){;}
-		this.onReceiveMessageFromStunServer = function(caller,event){;}
+		this.onSetSessionDescription = function(caller,event){;}
 	});
 
 	Caller.prototype.setEventListener =function(observer) {
@@ -30,44 +31,39 @@ var Caller = function Caller(id) {
 		return this.mMyUUID;
 	};
 
+	Caller.prototype.getLocalDescription = function() {
+		try {
+			return _own.pc.localDescription;
+		} catch(e) {
+			return null;
+		}
+	};
+
 	Caller.prototype.createPeerConnection = function() {
 		console.log("+++createPeerConnection()\n");
-		var _own = this;
 		try {
 			this.pc = new webkitRTCPeerConnection(this.pcConfig, this.pcConstraints);
 			this.mDataChannel = this.pc.createDataChannel("channel",{});
 
 			this.setChannelEvents();
-			var _own = this;
 			this.pc.onicecandidate = function (event) {//RTCIceCandidateEvent
 				if(event.candidate) {
-					console.log("+onIceCandidate("+event+","+event.candidate+") 00");
+					console.log("+onIceCandidate("+event+","+event.candidate+"):"+_iceCandidateType(_own.pc.localDescription.sdp));
 					_own.mObserver.onIceCandidate(_own, event);
 				} else {
-					console.log("+onIceCandidate(null) 00");
+					console.log("+onIceCandidate(null)");
 				}
 			};
 			this.pc.onaddstream = function (event) {console.log("+++onRemoteStreamAdd("+event+"\n");};
 			this.pc.onremovestream = function (event) {console.log("+++onRemoteStreamRemoved("+event+"\n");};
 			this.pc.onsignalingstatechange = function (event) {console.log("+++onSignalingChanged("+event+"\n");};
-			this.pc.oniceconnectionstatechange = function (event) {
-				console.log("+++onIceConnectionStateChanged("+event.type+"\n");
-			};
-			this.onnegotiationneeded = function () {
-				console.log("+++onnegotiationneeded()\n");
-				//_own.pc.createOffer(localDescCreated, logError);
-		    };
+			this.pc.oniceconnectionstatechange = function (event) {console.log("+++onIceConnectionStateChanged("+event.type+"\n");};
+			this.onnegotiationneeded = function () {console.log("+++onnegotiationneeded()\n");};
 			this.pc.ondatachannel = function(event) {
 				console.log("--ondatachannel-\n");
 				_own.mDataChannel = event.channel;
 				_own.setChannelEvents();
 			};
-		/*	navigator.webkitGetUserMedia({ "audio": true, "video": true }, function (stream) {
-		        selfView.src = URL.createObjectURL(stream);
-		        pc.addStream(stream);
-		    }, function logError(error) {
-		        log(error.name + ": " + error.message);
-		    });*/
 		} catch (e) {
 			alert("can not create peer connection."+e+"");
 		}
@@ -76,14 +72,13 @@ var Caller = function Caller(id) {
 
 	Caller.prototype.createOffer = function () {
 		console.log("+++createOffer()\n");
-		var _own = this;
 		this.pc.createOffer(
 				function _onSetLocalAndMessage (sessionDescription) {
 					console.log("+++setLocalAndSendMessage obj="+sessionDescription+"\n");
 					_own.pc.setLocalDescription(
 							sessionDescription, 
 							function() {console.log("+++onSetSessionDescriptionSuccess.");
-								_own.mObserver.onReceiveMessageFromStunServer(_own, _own.pc.localDescription.type, _own.pc.localDescription.sdp);
+								_own.mObserver.onSetSessionDescription(_own, _own.pc.localDescription.type, _own.pc.localDescription.sdp);
 							},
 							function(error) {console.log("+++onSetSessionDescriptionError" + error.toString());}
 					);
@@ -93,7 +88,6 @@ var Caller = function Caller(id) {
 
 	Caller.prototype.createAnswer = function () {
 		console.log("+++createAnsert()\n");
-		var _own = this;
 		this.pc.createAnswer(
 				function _onSetLocalAndMessage (sessionDescription) {
 					console.log("+++setLocalAndSendMessage obj="+sessionDescription+"\n");
@@ -118,7 +112,6 @@ var Caller = function Caller(id) {
 		}
 	}
 
-
 	Caller.prototype.sendMessage = function (message) {
 		console.log("+++sendHello()"+message+"\n");
 		this.mDataChannel.send(message);
@@ -133,7 +126,14 @@ var Caller = function Caller(id) {
 		return this;
 	};
 
-	Caller.prototype.setChannelEvents = _setChannelEvents;
+	Caller.prototype.setChannelEvents = function() {
+		console.log("+++setChannelEvent()\n");
+		this.mDataChannel.onmessage = function(event) {_own.mObserver.onReceiveMessage(_own, event.data);};
+		this.mDataChannel.onopen = function(event) {console.log("onopen:"+event);};
+		this.mDataChannel.onerror = function(error) {console.log("onerror:"+JSON.parse(error));};
+		this.mDataChannel.onclose = function(error) {console.log("onclose:"+JSON.parse(error));};
+	};
+
 	arguments.callee.iceType = _iceCandidateType;
 };
 
@@ -154,21 +154,5 @@ function _iceCandidateType(candidateSDP) {
 
 
 
-function _setChannelEvents() {
-	console.log("+++setChannelEvent()\n");
-	var _own = this;
-	this.mDataChannel.onmessage = function(event) {
-		_own.mObserver.onReceiveMessage(_own, event.data);
-	};
-	this.mDataChannel.onopen = function(event) {
-		console.log("onopen:"+event);
-	};
-	this.mDataChannel.onerror = function(error) {
-		console.log("onerror:"+JSON.parse(error));
-	};
-	this.mDataChannel.onclose = function(error) {
-		console.log("onclose:"+JSON.parse(error));
-	};
-}
 
 try{module.exports = Caller;}catch(e){}
