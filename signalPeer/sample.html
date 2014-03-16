@@ -10,7 +10,6 @@ var _mSignalPeer = null;
 var v = new function() {
    this.onJoinNetwork = function(peer,v) {
    		console.log("joinNetwork():------------------------");
-  
  		// create button
 		var elm = document.createElement("button");
 		elm.textContent = "[server] "+v.from;
@@ -19,9 +18,21 @@ var v = new function() {
 		elm.setAttribute("value", v.from);
 		offerList.appendChild(elm);		
    };
+
    this.onReceiveMessage = function(peer, v) {
-//   		var p2pMes = JSON.parse(v);
+   		var p2pMes = JSON.parse(v);
    		console.log("onReceiveMessage:------------------------");
+   		if("response" === p2pMes.type) {
+	    	if("findnode" === p2pMes.command) {
+ 		// create button
+		var elm = document.createElement("button");
+		elm.textContent = "[peer"+p2pMes.from+"] "+p2pMes.node["node0"];
+		var offerList = document.getElementById("offerlist");
+		elm.setAttribute("onclick", "onPushSendOffer(\""+p2pMes.from+"\");");
+		elm.setAttribute("value", v.from);
+		offerList.appendChild(elm);
+	    	}
+	    }
    };
 };
 
@@ -36,7 +47,7 @@ function onPushSendJoin() {
 }
 
 function onPushSendOffer(type) {
-    console.log("onPushSendOffer()"+event.srcElement.uuid);
+    console.log("onPushSendOffer()"+event.srcElement.value+","+type);
     var uuid = event.srcElement.value;
     _mSignalPeer.sendOffer(uuid);
 }

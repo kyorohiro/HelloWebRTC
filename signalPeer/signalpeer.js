@@ -145,6 +145,7 @@ function SignalPeer(initialServerUrl) {
 	this.onRecvFindNode = function (caller, v) {
 		var mes = {};
 		mes.type = "response";
+		mes.command = v.command;
 		mes.id = v.id;
 		this.mPeerList.keys();
 		mes.node = {};
@@ -159,6 +160,7 @@ function SignalPeer(initialServerUrl) {
 	    		break;
 	    	}
 	    }
+	    mes.nodelen = i;
 	    caller.sendMessage(JSON.stringify(mes));
 	};
 	
