@@ -135,7 +135,7 @@ var Caller = function Caller(id) {
 			//
 			// #p2p message receive
 			//
-			console.log("+++onReceiveMessage()"+JSON.parse(event.data)+"\n");
+			console.log("+++onReceiveMessage()"+event.data+"\n");
 			_own.mObserver.onReceiveMessage(_own, event.data);
 		};
 		this.mDataChannel.onopen = function(event) {console.log("onopen:"+event);};
