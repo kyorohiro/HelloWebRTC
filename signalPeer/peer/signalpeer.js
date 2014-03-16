@@ -1,6 +1,4 @@
-document.write("<script type='text/javascript' src='./uuid.njs'><\/script>");
-document.write("<script type='text/javascript' src='./caller.js'><\/script>");
-document.write("<script type='text/javascript' src='./callerinfo.js'><\/script>");
+
 
 function SignalPeer(initialServerUrl) {
 

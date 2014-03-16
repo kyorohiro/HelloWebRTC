@@ -1,8 +1,8 @@
 var HTTP = require('http');
 var WSServer = require('websocket').server;
 var Fs = require('fs');
-var UserInfo = require("./userinfo.njs");
-var UUID = require("./uuid.njs");
+var UserInfo = require("../util/userinfo.njs");
+var UUID = require("../util/uuid.njs");
 
 var SignalServer = function SignalServer() {
 	this.mHttpServer = null;

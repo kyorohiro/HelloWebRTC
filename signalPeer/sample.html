@@ -1,9 +1,11 @@
 <html>
 <header>
 <title>sample</title>
-<script src="signalclient.js" type="text/javascript"></script>
-<script src="caller.js" type="text/javascript"></script>
-<script src="signalpeer.js" type="text/javascript"></script>
+<script src="signal/signalclient.js" type="text/javascript"></script>
+<script src="caller/caller.js" type="text/javascript"></script>
+<script src="caller/callerinfo.js" type="text/javascript"></script>
+<script src="peer/signalpeer.js" type="text/javascript"></script>
+<script src="util/uuid.njs" type="text/javascript"></script>
 <script type="text/javascript">
 <!--
 var _mSignalPeer = null;
@@ -14,7 +16,7 @@ var v = new function() {
 		var elm = document.createElement("button");
 		elm.textContent = "[server] "+v.from;
 		var offerList = document.getElementById("offerlist");
-		elm.setAttribute("onclick", "onPushSendOffer(\"init\");");
+		elm.setAttribute("onclick", "onPushSendOffer(\"server\");");
 		elm.setAttribute("value", v.from);
 		offerList.appendChild(elm);		
    };
@@ -49,7 +51,11 @@ function onPushSendJoin() {
 function onPushSendOffer(type) {
     console.log("onPushSendOffer()"+event.srcElement.value+","+type);
     var uuid = event.srcElement.value;
-    _mSignalPeer.sendOffer(uuid);
+    if("server" == type) { 
+    	_mSignalPeer.sendOffer(uuid);
+    } else {
+    	_mSignalPeer.sendOffer(uuid);    	
+    }
 }
 
 function onPushSendHello() {
