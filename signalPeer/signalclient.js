@@ -24,6 +24,16 @@ var SignalClient = function SignalClient(url) {
 		this.ws.send(JSON.stringify(v));
 	};
 
+	SignalClient.prototype.sendCandidate = function(to, from, content) {
+		var v = {};
+		v["_to"]          = to;
+		v["_from"]        = from;
+		v["_messageType"] = "unicast";
+		v["_contentType"] = "candidate";
+		v["_content"]     = content;
+		this.ws.send(JSON.stringify(v));
+	};
+
 	SignalClient.prototype.sendAnswer = function(to, from, content) {
 		var v = {};
 		v["_to"]          = to;

@@ -8,9 +8,25 @@ function CallerInfo() {
 	};
 
 	CallerInfo.prototype.create = function(myUuid, targetUuid) {
-	    var _caller = new Caller(myUuid);
-	    this.add(targetUuid, _caller);
-		return _caller;
+		if(this.include(targetUuid)) {
+			console.log("###################sssss:e"+targetUuid);
+			return this.get(targetUuid);
+		}
+		else {
+			console.log("###################sssss:d"+targetUuid);
+			var _caller = new Caller(myUuid).setTargetUUID(targetUuid);
+		    this.add(targetUuid, _caller);
+			return _caller;
+		}
+	};
+
+	CallerInfo.prototype.include = function(uuid) {
+		for(key in this.list) {
+			if(key == uuid) {
+				return true;
+			}
+		}
+		return false;
 	};
 
 	CallerInfo.prototype.get = function(uuid) {
