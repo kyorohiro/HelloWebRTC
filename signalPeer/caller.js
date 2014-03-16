@@ -113,7 +113,10 @@ var Caller = function Caller(id) {
 	}
 
 	Caller.prototype.sendMessage = function (message) {
-		console.log("+++sendHello()"+message+"\n");
+		//
+		// #p2p message send
+		//
+		console.log("+++sendMessage()"+message+"\n");
 		this.mDataChannel.send(message);
 	};
 
@@ -128,7 +131,13 @@ var Caller = function Caller(id) {
 
 	Caller.prototype.setChannelEvents = function() {
 		console.log("+++setChannelEvent()\n");
-		this.mDataChannel.onmessage = function(event) {_own.mObserver.onReceiveMessage(_own, event.data);};
+		this.mDataChannel.onmessage = function(event) {
+			//
+			// #p2p message receive
+			//
+			console.log("+++onReceiveMessage()"+JSON.parse(event.data)+"\n");
+			_own.mObserver.onReceiveMessage(_own, event.data);
+		};
 		this.mDataChannel.onopen = function(event) {console.log("onopen:"+event);};
 		this.mDataChannel.onerror = function(error) {console.log("onerror:"+JSON.parse(error));};
 		this.mDataChannel.onclose = function(error) {console.log("onclose:"+JSON.parse(error));};

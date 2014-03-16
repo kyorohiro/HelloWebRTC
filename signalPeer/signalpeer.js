@@ -119,7 +119,7 @@ function SignalPeer(initialServerUrl) {
 	    var p2pMes = JSON.parse(message);
 	    if("query" === p2pMes.type) {
 	    	if("findnode" === p2pMes.command) {
-	    		_this.onRecvGetPeers(p2pMes);
+	    		_this.onRecvFindNode(caller, p2pMes);
 	    	}
 	    }
 	};
@@ -143,11 +143,12 @@ function SignalPeer(initialServerUrl) {
 	//
 	// 
 	this.onRecvFindNode = function (caller, v) {
-		var mes = v.content;
+		var mes = {};
 		mes.type = "response";
 		mes.id = v.id;
 		this.mPeerList.keys();
 		mes.node = {};
+		mes.from = this.mUUID;
 	    var keys = this.mPeerList.keys();
 	    var i = 0;
 	    while(keys.length != 0) {
@@ -158,7 +159,7 @@ function SignalPeer(initialServerUrl) {
 	    		break;
 	    	}
 	    }
-	    caller.send(JSON.stringify(mes));
+	    caller.sendMessage(JSON.stringify(mes));
 	};
 	
 	// 
