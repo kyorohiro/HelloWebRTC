@@ -61,7 +61,7 @@ var SignalClient = function SignalClient(url) {
 			_own.mList[uuid] = v;
 		}
 		if(_own.mOnMessage != null) {
-			_own.mOnMessage(m);
+			_own.mOnMessage(parsedData);
 		}
 	};
 

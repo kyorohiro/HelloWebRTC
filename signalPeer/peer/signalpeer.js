@@ -59,10 +59,10 @@ function SignalPeer(initialServerUrl) {
 	// receive message from initialserver
 	this.onReceiveMessageFromInitServer = function(message) {
 		var v = {};
-		v.contentType = JSON.parse(message.data)["_contentType"];
-		v.content     = JSON.parse(message.data)["_content"];
-		v.from        = JSON.parse(message.data)["_from"];
-		v.to          = JSON.parse(message.data)["_to"];
+		v.contentType = message["_contentType"];
+		v.content     = message["_content"];
+		v.from        = message["_from"];
+		v.to          = message["_to"];
 		console.log("###################init sv:"+v.contentType+","+v.from);
 		if ("join" === v.contentType) {
 			_this.mObserver.onJoinNetwork(this, v);
