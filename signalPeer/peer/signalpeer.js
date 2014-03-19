@@ -6,7 +6,8 @@ function SignalPeer(initialServerUrl) {
 	this.mUUID = UUID.getId();
 	this.mPeerList = new CallerInfo();
 	this.mSignalClient = new SignalClient(initialServerUrl);
-
+	this.mMessageTransfer = new MessageTransfer(this);
+	this.mMessageProtocol = new MessageProtocol(this);
 	//
 	// #interface 
 	this.mObserver = new function() {
@@ -103,12 +104,16 @@ function SignalPeer(initialServerUrl) {
 		.setRemoteSDP("answer", v.content);
 	}
 
+	this.getPeerList = function() {
+		return this.mPeerList;
+	};
+
 	this.sendHello = function() {
 	    console.log("sendHello()");
 	    var keys = this.mPeerList.keys();
 	    while(keys.length != 0) {
 	    	var key = keys.pop();
-	    	_this.sendFindNode(key);
+	    	_this.mMessageProtocol.sendFindNode(key);
 	    }
 	}
 
@@ -117,62 +122,12 @@ function SignalPeer(initialServerUrl) {
 	    var p2pMes = JSON.parse(message);
 	    if("query" === p2pMes.type) {
 	    	if("findnode" === p2pMes.command) {
-	    		_this.onRecvFindNode(caller, p2pMes);
+	    		_this.mMessageProtocol.onRecvFindNode(caller, p2pMes);
 	    	}
 	    }
 	};
 
 
-	//---
-	// p2p message
-	//---
-	
-	// find peer
-	this.sendFindNode = function (uuid) {
-		var mes = {};
-		mes.type = "query";
-		mes.command = "findnode";
-		mes.id = UUID.getId();
-		mes.from = this.mUUID;
-		mes.target = uuid;
-		this.mPeerList.get(uuid).caller.sendMessage(JSON.stringify(mes));
-	}
 
-	//
-	// 
-	this.onRecvFindNode = function (caller, v) {
-		var mes = {};
-		mes.type = "response";
-		mes.command = v.command;
-		mes.id = v.id;
-		this.mPeerList.keys();
-		mes.node = {};
-		mes.from = this.mUUID;
-	    var keys = this.mPeerList.keys();
-	    var i = 0;
-	    while(keys.length != 0) {
-	    	var key = keys.pop();
-	    	mes.node["node"+i] = key;
-	    	i += 1;
-	    	if(i>=8) {
-	    		break;
-	    	}
-	    }
-	    mes.nodelen = i;
-	    caller.sendMessage(JSON.stringify(mes));
-	};
-	
-	// 
-	this.sendOfferPeer = function() {
-	};
-
-	this.onRecvOfferPeer = function() {
-	};
-
-	this.sendAnswerPeer = function() {
-	};
-
-	this.onRecvAnswerPeer = function() {
-	};
 };
 
