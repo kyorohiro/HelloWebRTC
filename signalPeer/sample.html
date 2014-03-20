@@ -54,7 +54,7 @@ var v = new function() {
    };
 
    this.onReceiveMessage = function(peer, v) {
-   		var p2pMes = JSON.parse(v);
+   		var p2pMes = v;//SON.parse(v);
    		console.log("onReceiveMessage:------------------------");
    		if("response" === p2pMes.type) {
 	    	if("findnode" === p2pMes.command) {

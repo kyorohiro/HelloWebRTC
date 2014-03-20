@@ -38,12 +38,15 @@ function SignalPeer(initialServerUrl) {
 					_this.mSignalClient.sendAnswer(caller.getTargetUUID(), _this.mUUID, sdp);
 				}
 			};
-		   this.onReceiveMessage = function(peer, v) {
-			   _this.onMessageFromPeer(peer, v);
+
+			this.onReceiveMessage = function(peer, v) {
+			   var p2pMes = JSON.parse(v);
+			   _this.onMessageFromPeer(peer, p2pMes);
 			   if(_t.mWork != null) {
-				   _t.mWork.onReceiveMessage(peer, v);
+				   _t.mWork.onReceiveMessage(peer, p2pMes);
 			   }
 		   };
+
 		   this.setDecorteWork = function(work) {
 			   _t.mWork = work;
 		   }
@@ -127,8 +130,8 @@ function SignalPeer(initialServerUrl) {
 	}
 
 	this.onMessageFromPeer = function(caller, message) {
-	    console.log("###################peer:"+JSON.parse(message).from);
-	    var p2pMes = JSON.parse(message);
+	    console.log("###################peer:"+message.from);
+	    var p2pMes = message;
 	    if("query" === p2pMes.type) {
 	    	if("findnode" === p2pMes.command) {
 	    		_this.mMessageProtocol.onRecvFindNode(caller, p2pMes);
