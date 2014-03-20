@@ -27,20 +27,21 @@ var v = new function() {
 		addBr("offerlist");
 		addButton("offerlist","findnode","onPushFindNode(\""+v.from+"\");", v.from);
 		addBr("offerlist");
+		addBr("offerlist");
    };
 
    this.onReceiveMessage = function(peer, v) {
-   		var p2pMes = v;//SON.parse(v);
    		console.log("onReceiveMessage:------------------------");
-   		if("response" === p2pMes.type) {
-	    	if("findnode" === p2pMes.command) {
+   		if("response" === v.type) {
+	    	if("findnode" === v.command) {
  				// create button
-				var elm = document.createElement("button");
-				elm.textContent = "[peer"+p2pMes.from+"] "+p2pMes.node["node0"];
-				var offerList = document.getElementById("offerlist");
-				elm.setAttribute("onclick", "onPushSendOffer(\""+p2pMes.from+"\");");
-				elm.setAttribute("value", v.from);
-				offerList.appendChild(elm);
+				addLabel("offerlist", "[peer"+v.from+"] "+v.node["node0"]);
+				addBr("offerlist");
+				addButton("offerlist","offer","onPushSendOffer(\""+v.from+"\");", v.from);
+				addBr("offerlist");
+				addButton("offerlist","findnode","onPushFindNode(\""+v.from+"\");", v.from);
+				addBr("offerlist");
+				addBr("offerlist");
 	    	}
 	    }
    };
