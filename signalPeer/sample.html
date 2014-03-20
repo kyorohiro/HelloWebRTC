@@ -1,6 +1,7 @@
 <html>
 <header>
 <title>sample</title>
+<script src="gui/testgui.js" type="text/javascript"></script>
 <script src="signal/signalclient.js" type="text/javascript"></script>
 <script src="caller/caller.js" type="text/javascript"></script>
 <script src="caller/callerinfo.js" type="text/javascript"></script>
@@ -20,37 +21,12 @@ var v = new function() {
    		}
  		// create button
 		var offerList = document.getElementById("offerlist");
-		{
-			var elm = document.createElement("label");
-			elm.textContent = "[server] "+v.from;
-			offerList.appendChild(elm);		
-		}
-		{
-			var elm = document.createElement("br");
-			offerList.appendChild(elm);
-		}
- 		{
-			var elm = document.createElement("button");
-			elm.textContent = "offer";
-			elm.setAttribute("onclick", "onPushSendOffer(\"server\");");
-			elm.setAttribute("value", v.from);
-			offerList.appendChild(elm);
-		}
-		{
-			var elm = document.createElement("br");
-			offerList.appendChild(elm);
-		}
- 		{
-			var elm = document.createElement("button");
-			elm.textContent = "findnode";
-			elm.setAttribute("onclick", "onPushFindNode(\""+v.from+"\");");
-			elm.setAttribute("value", v.from);
-			offerList.appendChild(elm);
-		}
-		{
-			var elm = document.createElement("br");
-			offerList.appendChild(elm);
-		}
+		addLabel("offerlist", "[server] "+v.from);
+		addBr("offerlist");
+		addButton("offerlist","offer","onPushSendOffer(\"server\");", v.from);
+		addBr("offerlist");
+		addButton("offerlist","findnode","onPushFindNode(\""+v.from+"\");", v.from);
+		addBr("offerlist");
    };
 
    this.onReceiveMessage = function(peer, v) {
