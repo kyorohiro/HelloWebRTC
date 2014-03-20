@@ -31,11 +31,12 @@ var v = new function() {
 
    this.onReceiveMessage = function(peer, v) {
    		console.log("onReceiveMessage:------------------------");
-      	if(_mSignalPeer.getUUID() === v.node["node0"]) {
-   			return;
-   		}
+
    		if("response" === v.type) {
 	    	if("findnode" === v.command) {
+	    	   	if(_mSignalPeer.getUUID() === v.node["node0"]) {
+   					return;
+   				}
  				// create button
 				addLabel("offerlist", "[peer"+v.from+"] "+v.node["node0"]);
 				addBr("offerlist");
