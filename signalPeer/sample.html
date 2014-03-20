@@ -14,14 +14,43 @@
 var _mSignalPeer = null;
 var v = new function() {
    this.onJoinNetwork = function(peer,v) {
-   		console.log("joinNetwork():------------------------");
+   		console.log("joinNetwork():------------"+v.from+"------------");
+   		if(v.from === _mSignalPeer.getUUID()) {
+   			return;
+   		}
  		// create button
-		var elm = document.createElement("button");
-		elm.textContent = "[server] "+v.from;
 		var offerList = document.getElementById("offerlist");
-		elm.setAttribute("onclick", "onPushSendOffer(\"server\");");
-		elm.setAttribute("value", v.from);
-		offerList.appendChild(elm);		
+		{
+			var elm = document.createElement("label");
+			elm.textContent = "[server] "+v.from;
+			offerList.appendChild(elm);		
+		}
+		{
+			var elm = document.createElement("br");
+			offerList.appendChild(elm);
+		}
+ 		{
+			var elm = document.createElement("button");
+			elm.textContent = "offer";
+			elm.setAttribute("onclick", "onPushSendOffer(\"server\");");
+			elm.setAttribute("value", v.from);
+			offerList.appendChild(elm);
+		}
+		{
+			var elm = document.createElement("br");
+			offerList.appendChild(elm);
+		}
+ 		{
+			var elm = document.createElement("button");
+			elm.textContent = "findnode";
+			elm.setAttribute("onclick", "onPushFindNode(\""+v.from+"\");");
+			elm.setAttribute("value", v.from);
+			offerList.appendChild(elm);
+		}
+		{
+			var elm = document.createElement("br");
+			offerList.appendChild(elm);
+		}
    };
 
    this.onReceiveMessage = function(peer, v) {
@@ -29,13 +58,13 @@ var v = new function() {
    		console.log("onReceiveMessage:------------------------");
    		if("response" === p2pMes.type) {
 	    	if("findnode" === p2pMes.command) {
- 		// create button
-		var elm = document.createElement("button");
-		elm.textContent = "[peer"+p2pMes.from+"] "+p2pMes.node["node0"];
-		var offerList = document.getElementById("offerlist");
-		elm.setAttribute("onclick", "onPushSendOffer(\""+p2pMes.from+"\");");
-		elm.setAttribute("value", v.from);
-		offerList.appendChild(elm);
+ 				// create button
+				var elm = document.createElement("button");
+				elm.textContent = "[peer"+p2pMes.from+"] "+p2pMes.node["node0"];
+				var offerList = document.getElementById("offerlist");
+				elm.setAttribute("onclick", "onPushSendOffer(\""+p2pMes.from+"\");");
+				elm.setAttribute("value", v.from);
+				offerList.appendChild(elm);
 	    	}
 	    }
    };
@@ -60,6 +89,12 @@ function onPushSendOffer(type) {
     	_mSignalPeer.sendOffer(uuid);    	
     }
 }
+
+function onPushFindNode(uuid) {
+    console.log("onPushFindNode():"+uuid);
+    _mSignalPeer.getMessageProtocol().sendFindNode(uuid);
+}
+
 
 function onPushSendHello() {
     console.log("onPushSendHello()");

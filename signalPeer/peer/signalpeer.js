@@ -8,6 +8,15 @@ function SignalPeer(initialServerUrl) {
 	this.mSignalClient = new SignalClient(initialServerUrl);
 	this.mMessageTransfer = new MessageTransfer(this);
 	this.mMessageProtocol = new MessageProtocol(this);
+	
+	this.getMessageTransfer = function() {
+		return this.mMessageTransfer;
+	};
+
+	this.getMessageProtocol = function() {
+		return this.mMessageProtocol;
+	};
+
 	//
 	// #interface 
 	this.mObserver = new function() {
