@@ -20,7 +20,6 @@ var v = new function() {
    			return;
    		}
  		// create button
-		var offerList = document.getElementById("offerlist");
 		addLabel("offerlist", "[server] "+v.from);
 		addBr("offerlist");
 		addButton("offerlist","offer","onPushSendOffer(\"server\");", v.from);
@@ -88,8 +87,6 @@ function onPushSendHello() {
 <body>
 <label id="uuid">uuid_value</label><br><br>
 <button id="join" onclick="onPushSendJoin();">join network(server)</button><br><br>
-<button id="hello" onclick="onPushSendHello();">sendHello</button><br><br>
-
 <br>
 <div id="offerlist">
 <h3>[PeerList]</h3>
