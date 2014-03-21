@@ -17,12 +17,13 @@ var SignalClient = function SignalClient(url) {
 		this.mPeer = peer;
 	};
 
-	this.onReceiveMessage = function(message) {
+	this.onReceiveMessage = function(mes) {
+		var message = mes.content;
 		var v = {};
-		v.contentType = message["_contentType"];
-		v.content     = message["_content"];
-		v.from        = message["_from"];
-		v.to          = message["_to"];
+		v.contentType = message["contentType"];
+		v.content     = message["content"];
+		v.from        = mes["from"];
+		v.to          = mes["to"];
 		console.log("###################init sv:"+v.contentType+","+v.from);
 		if ("join" === v.contentType) {
 			this.mPeer.onJoinNetwork(v);
@@ -39,42 +40,50 @@ var SignalClient = function SignalClient(url) {
 		this.ws.send("hello");
 	};
 
-	SignalClient.prototype.join = function(to) {
+	SignalClient.prototype.join = function(from) {
 		var v = {};
-		v["_from"]        = to;
-		v["_messageType"] = "broadcast";
-		v["_contentType"] = "join";
-		v["_content"]     = "hello";
+		v["from"]        = from;
+		v["messageType"] = "broadcast";
+		var c = {};
+		c["contentType"] = "join";
+		c["content"]     = "hello";
+		v["content"]     = c;
 		this.ws.send(JSON.stringify(v));
 	};
 
 	SignalClient.prototype.sendOffer = function(to, from, content) {
 		var v = {};
-		v["_to"]          = to;
-		v["_from"]        = from;
-		v["_messageType"] = "unicast";
-		v["_contentType"] = "offer";
-		v["_content"]     = content;
+		v["to"]          = to;
+		v["from"]        = from;
+		v["messageType"] = "unicast";
+		var c = {};
+		c["contentType"] = "offer";
+		c["content"]     = content;
+		v["content"]     = c;
 		this.ws.send(JSON.stringify(v));
 	};
 
 	SignalClient.prototype.sendCandidate = function(to, from, content) {
 		var v = {};
-		v["_to"]          = to;
-		v["_from"]        = from;
-		v["_messageType"] = "unicast";
-		v["_contentType"] = "candidate";
-		v["_content"]     = content;
+		v["to"]          = to;
+		v["from"]        = from;
+		v["messageType"] = "unicast";
+		var c = {};
+		c["contentType"] = "candidate";
+		c["content"]     = content;
+		v["content"]     = c;
 		this.ws.send(JSON.stringify(v));
 	};
 
 	SignalClient.prototype.sendAnswer = function(to, from, content) {
 		var v = {};
-		v["_to"]          = to;
-		v["_from"]        = from;
-		v["_messageType"] = "unicast";
-		v["_contentType"] = "answer";
-		v["_content"]     = content;
+		v["to"]          = to;
+		v["from"]        = from;
+		v["messageType"] = "unicast";
+		var c = {};
+		c["contentType"] = "answer";
+		c["content"]     = content;
+		v["content"]     = c;
 		this.ws.send(JSON.stringify(v));
 	};
 

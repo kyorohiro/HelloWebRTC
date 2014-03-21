@@ -2,17 +2,44 @@
 function MessageTransfer(target) {
 	this.mParent = target;
 
+	this.mPeer = new (function() {
+		this.onReceiveAnswer = function(v) {console.log("+++onReceiveAnswer()\n");}
+		this.addIceCandidate = function(v) {console.log("+++addIceCandidate()\n");}
+		this.startAnswerTransaction = function(v) {console.log("+++startAnswerTransaction()\n");}
+		this.onJoinNetwork = function(v) {console.log("+++onJoinNetwork()\n");}
+	});
+	this.setPeer = function(peer) {
+		this.mPeer = peer;
+	};
+
+	this.onReceiveMessage = function(message) {
+		var v = {};
+		v.contentType = message["contentType"];
+		v.content     = message["content"];
+		v.from        = message["from"];
+		v.to          = message["to"];
+		console.log("###################init sv:"+v.contentType+","+v.from);
+		if ("join" === v.contentType) {
+			this.mPeer.onJoinNetwork(v);
+		} else if ("answer"=== v.contentType) {
+			this.mPeer.onReceiveAnswer(v)
+		} else if ("offer" === v.contentType) {
+			this.mPeer.startAnswerTransaction(v, this.mPeer.getSignalClient());
+		} else if("candidate" == v.contentType){
+			this.mPeer.addIceCandidate(v);
+		}
+	};
 	this.sendOffer = function(to, from, sdp) {
 		var cont = {};
 		cont.contentType = "offer";
-		cont.sdp = sdp;
+		cont.content = sdp;
 		this.sendUnicastMessage(to, from, cont);
 	};
 
 	this.sendAnswer = function(to, from, sdp) {
 		var cont = {};
 		cont.contentType = "answer";
-		cont.sdp = sdp;
+		cont.content = sdp;
 		this.sendUnicastMessage(to, from, cont);
 	};
 

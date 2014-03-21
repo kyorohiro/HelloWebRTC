@@ -32,27 +32,24 @@ var SignalServer = function SignalServer() {
 			var websocket = req.accept(null, req.origin);
 			websocket.on('message', function(mes) {
 				console.log("mes:"+mes.utf8Data);
-				var contentType   = JSON.parse(mes.utf8Data)["_contentType"];
-				var messageType   = JSON.parse(mes.utf8Data)["_messageType"];
-				var content = JSON.parse(mes.utf8Data)["_content"];
-				var to      = JSON.parse(mes.utf8Data)["_to"];
-				var from    = JSON.parse(mes.utf8Data)["_from"];
+				var messageType   = JSON.parse(mes.utf8Data)["messageType"];
+				var content = JSON.parse(mes.utf8Data)["content"];
+				var to      = JSON.parse(mes.utf8Data)["to"];
+				var from    = JSON.parse(mes.utf8Data)["from"];
 				console.log("to:"+to);
 				console.log("from:"+from);
 				_own.mUserInfos.add(from, websocket)
 
 				if(messageType === "unicast") {
 					var v = {}
-					v["_contentType"]    = contentType;
-					v["_content"] = content;
-					v["_to"]      = to;
-					v["_from"]    = from;
+					v["content"] = content;
+					v["to"]      = to;
+					v["from"]    = from;
 					_own.uniMessage(to, JSON.stringify(v));
 				} else if(messageType =="broadcast") {
 					var v = {}
-					v["_contentType"] = contentType;
-					v["_content"]     = content;
-					v["_from"]        = from;
+					v["content"]     = content;
+					v["from"]        = from;
 					_own.broadcastMessage(JSON.stringify(v));
 				} 
 			});

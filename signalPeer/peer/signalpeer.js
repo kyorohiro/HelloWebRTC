@@ -72,17 +72,26 @@ function SignalPeer(initialServerUrl) {
 	this.joinNetwork = function() {
 		_this.mSignalClient.join(this.mUUID);
 	};
-	
-	 this.onJoinNetwork = function(v) {
+
+	//--------------------------
+	// signal client defined peer
+	//
+	this.onJoinNetwork = function(v) {
     	 console.log("######onJoinNetwork:");
 		 _this.mObserver.onJoinNetwork(this, v);
-	 };
+	};
 
-	 this.addIceCandidate = function(v) {
+	this.addIceCandidate = function(v) {
 	    console.log("######addIceCandidate:");
 		_this.mPeerList.get(v.from).caller//create(_this.mUUID, v.from)
 		.addIceCandidate(v.content);//.candidate
-	 };
+	};
+
+	this.onReceiveAnswer = function(v) {
+	    console.log("######onReceiveAnswer()");
+		_this.mPeerList.get(v.from).caller
+		.setRemoteSDP("answer", v.content);
+	};
 
 	//
 	// if receive offer, then sendAnswer() and establish connection
@@ -95,6 +104,13 @@ function SignalPeer(initialServerUrl) {
 		.setSignalClient(signalClient)
 		.createAnswer();
 	};
+	//
+	// signal client defined peer
+	//------------------------------
+
+	this.getPeerList = function() {
+		return this.mPeerList;
+	};
 
 	//
 	// sendOffer() then, onReceiveAnswer()
@@ -105,16 +121,6 @@ function SignalPeer(initialServerUrl) {
 	    .createPeerConnection()
 	    .setSignalClient(_this.mSignalClient)
 	    .createOffer();
-	};
-
-	this.onReceiveAnswer = function(v) {
-	    console.log("######onReceiveAnswer()");
-		_this.mPeerList.get(v.from).caller
-		.setRemoteSDP("answer", v.content);
-	};
-
-	this.getPeerList = function() {
-		return this.mPeerList;
 	};
 
 	this.sendHello = function() {
