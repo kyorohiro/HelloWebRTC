@@ -90,11 +90,11 @@ function onPushSendJoin() {
 
 function onPushSendOffer(transfer,to) {
     console.log("onPushSendOffer()"+transfer+","+to);
-    if ("server" === transfer) {
+   // if ("server" === transfer) {
    	    _mSignalPeer.startOfferTransaction(transfer,to,_mSignalPeer.getSignalClient());
-   	}else {
-   	    _mSignalPeer.startOfferTransaction(transfer,to,_mSignalPeer.getSignalClient());
-   	}
+  //	}else {
+  // 	    _mSignalPeer.startOfferTransaction(transfer,to,_mSignalPeer.getMessageTransfer());
+  // 	}
    	//sendOffer(transfer,to);
 }
 

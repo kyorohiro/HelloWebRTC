@@ -43,7 +43,7 @@ function MessageTransfer(target) {
     		mes.to = to;
     		mes.from = from;
     		mes.content = content;
-    		mes.messageType = "message"; 
+    		mes.messageType = "transfer"; 
     		var targetPeer = this.mParen.get(to);
     		targetPeer.sendMessage(JSON.stringify(mes));
 	    }

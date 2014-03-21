@@ -3,6 +3,15 @@
 function MessageProtocol(target) {
 	this.mParent = target;
 
+	this.onReceiveMessage = function(caller, v) {
+		var message = JSON.parse(v);
+	    console.log("###################peer:"+message.from);
+	    if("query" === message.type) {
+	    	if("findnode" === message.command) {
+	    		this.onRecvFindNode(caller, message);
+	    	}
+	    }
+	};
 	//---
 	// p2p message
 	//---
