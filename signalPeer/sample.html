@@ -58,11 +58,13 @@ var v = new function() {
    					return;
    				}
  				// create button
-				addLabel("offerlist", "[peer"+v.from+"] "+v.node["node0"]);
-				addBr("offerlist");
-				addButton("offerlist","offer","onPushSendOffer(\""+v.from+"\",\""+v.node["node0"]+"\");", v.from);
-				addBr("offerlist");
-				addBr("offerlist");
+		 		var _id = v.node["node0"];
+				addDiv("offerlist",_id);
+				addLabel(_id, "[peer"+v.from+"] "+v.node["node0"]);
+				addBr(_id);
+				addButton(_id,"offer","onPushSendOffer(\""+v.from+"\",\""+v.node["node0"]+"\");", v.from);
+				addBr(_id);
+				addBr(_id);
 	    	}
 	    }
 	    else if("query" === v.type) {
