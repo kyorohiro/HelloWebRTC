@@ -138,7 +138,10 @@ var Caller = function Caller(id) {
 			console.log("+++onReceiveMessage()"+event.data+"\n");
 			_own.mObserver.onReceiveMessage(_own, event.data);
 		};
-		this.mDataChannel.onopen = function(event) {console.log("onopen:"+event);};
+		this.mDataChannel.onopen = function(event) {
+			console.log("############## onopen:"+event);
+			_own.mObserver.onOpen(_own, event.data);
+		};
 		this.mDataChannel.onerror = function(error) {console.log("onerror:"+JSON.parse(error));};
 		this.mDataChannel.onclose = function(error) {console.log("onclose:"+JSON.parse(error));};
 	};

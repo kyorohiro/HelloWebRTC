@@ -1,4 +1,3 @@
-
 function addLabel(parent, text) {
 	var offerList = document.getElementById(parent);
 	var elm = document.createElement("label");
@@ -12,12 +11,17 @@ function addBr(parent) {
 	offerList.appendChild(elm);
 };
 
+function addDiv(parent, id) {
+	var offerList = document.getElementById(parent);
+	var elm = document.createElement("div");
+	elm.setAttribute("id", id);
+	offerList.appendChild(elm);
+};
 
 function addButton(parent,text,action,value) {
 	var offerList = document.getElementById(parent);
 	var elm = document.createElement("button");
 	elm.textContent = text;
 	elm.setAttribute("onclick", action);
-	elm.setAttribute("value", value);
 	offerList.appendChild(elm);
 };

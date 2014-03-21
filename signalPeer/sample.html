@@ -14,19 +14,39 @@
 <!--
 var _mSignalPeer = null;
 var v = new function() {
+   this.onOpen = function(peer,v) {
+  		console.log("onOpen():--"+peer.getTargetUUID()+"-----");
+  		var _id = peer.getTargetUUID(); 
+  		// remove
+		{
+			var e = document.getElementById(_id);
+			if(e != undefined && e != null) {
+				e.parentNode.removeChild(e);
+			}
+		}
+		// create button
+		addDiv("offerlist",_id);
+		addLabel(_id, "[connected]"+peer.getTargetUUID());
+		addBr(_id);
+		addButton(_id,"findnode","onPushFindNode(\""+peer.getTargetUUID()+"\");", peer.getTargetUUID());
+		addBr(_id);
+		addBr(_id);
+   };
    this.onJoinNetwork = function(peer,v) {
    		console.log("joinNetwork():------------"+v.from+"------------");
    		if(v.from === _mSignalPeer.getUUID()) {
    			return;
    		}
  		// create button
-		addLabel("offerlist", "[server] "+v.from);
-		addBr("offerlist");
-		addButton("offerlist","offer","onPushSendOffer(\"server\");", v.from);
-		addBr("offerlist");
-		addButton("offerlist","findnode","onPushFindNode(\""+v.from+"\");", v.from);
-		addBr("offerlist");
-		addBr("offerlist");
+ 		var _id = v.from;
+		addDiv("offerlist",_id);
+		addLabel(_id, "[server] "+v.from);
+		addBr(_id);
+		addButton(_id,"offer","onPushSendOffer(\"server\",\""+v.from+"\");", v.from);
+		addBr(_id);
+		addButton(_id,"findnode","onPushFindNode(\""+v.from+"\");", v.from);
+		addBr(_id);
+		addBr(_id);
    };
 
    this.onReceiveMessage = function(peer, v) {
@@ -40,10 +60,10 @@ var v = new function() {
  				// create button
 				addLabel("offerlist", "[peer"+v.from+"] "+v.node["node0"]);
 				addBr("offerlist");
-				addButton("offerlist","offer","onPushSendOffer(\""+v.from+"\");", v.from);
+				addButton("offerlist","offer","onPushSendOffer(\""+v.from+"\",\""+v.from+"\");", v.from);
 				addBr("offerlist");
-				addButton("offerlist","findnode","onPushFindNode(\""+v.from+"\");", v.from);
-				addBr("offerlist");
+//				addButton("offerlist","findnode","onPushFindNode(\""+v.from+"\");", v.from);
+//				addBr("offerlist");
 				addBr("offerlist");
 	    	}
 	    }
@@ -60,13 +80,12 @@ function onPushSendJoin() {
     _mSignalPeer.joinNetwork();
 }
 
-function onPushSendOffer(type) {
-    console.log("onPushSendOffer()"+event.srcElement.value+","+type);
-    var uuid = event.srcElement.value;
-    if("server" == type) { 
-    	_mSignalPeer.sendOffer(uuid);
+function onPushSendOffer(transfer,to) {
+    console.log("onPushSendOffer()"+transfer+","+to);
+    if("server" == transfer) { 
+    	_mSignalPeer.sendOffer(to);
     } else {
-    	_mSignalPeer.sendOffer(uuid);    	
+    	_mSignalPeer.sendOffer(to);    	
     }
 }
 

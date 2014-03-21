@@ -23,11 +23,19 @@ function SignalPeer(initialServerUrl) {
 		   var _t = this;
 		   this.mWork = null;
 		   this.onJoinNetwork = function(peer,v) {
-			   if(_t.mWork != null) {
+			   if(_t.mWork != null&&_t.mWork.onJoinNetwork != undefined&&_t.mWork.onJoinNetwork != null) {
 				   _t.mWork.onJoinNetwork(peer, v);
 			   }
 		   };
+		   this.onOpen = function(caller,event) {
+			   if(_t.mWork != null&&_t.mWork.onOpen != undefined&&_t.mWork.onOpen != null) {
+				   this.mWork.onOpen(caller,event);
+			   }
+		   };
 		   this.onIceCandidate = function(caller,event) {
+			   if(_t.mWork != null&&_t.mWork.onIceCandidate != undefined&&_t.mWork.onIceCandidate != null) {
+				   _t.mWork.onIceCandidate(caller,event);
+			   }
 			   _this.mSignalClient.sendCandidate(caller.getTargetUUID(), _this.mUUID, event.candidate);
 		   };
 		   this.onSetSessionDescription = function(caller, type, sdp) {
@@ -42,7 +50,7 @@ function SignalPeer(initialServerUrl) {
 			this.onReceiveMessage = function(peer, v) {
 			   var p2pMes = JSON.parse(v);
 			   _this.onMessageFromPeer(peer, p2pMes);
-			   if(_t.mWork != null) {
+			   if(_t.mWork != null&&_t.mWork.onReceiveMessage != undefined&&_t.mWork.onReceiveMessage != null) {
 				   _t.mWork.onReceiveMessage(peer, p2pMes);
 			   }
 		   };
