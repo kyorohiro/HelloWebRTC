@@ -17,6 +17,10 @@ function SignalPeer(initialServerUrl) {
 		return this.mMessageProtocol;
 	};
 
+	this.getSignalClient = function() {
+		return this.mSignalClient;
+	};
+
 	//
 	// #interface 
 	this.mObserver = new function() {
@@ -40,11 +44,6 @@ function SignalPeer(initialServerUrl) {
 		   };
 		   this.onSetSessionDescription = function(caller, type, sdp) {
 				console.log("###################stun sv:"+type+","+caller.getTargetUUID()+","+_this.mUUID);
-			//	if("offer" === type) {
-			//		_this.mSignalClient.sendOffer(caller.getTargetUUID(), _this.mUUID, sdp);
-			//	} else if("answer" === type) {
-			//		_this.mSignalClient.sendAnswer(caller.getTargetUUID(), _this.mUUID, sdp);
-			//	}
 			};
 			this.onReceiveMessage = function(peer, v) {
 			   var p2pMes = JSON.parse(v);
@@ -88,7 +87,7 @@ function SignalPeer(initialServerUrl) {
 		} else if ("answer"=== v.contentType) {
 			_this.onReceiveAnswer(v)
 		} else if ("offer" === v.contentType) {
-			_this.sendAnswer(v);
+			_this.startAnswerTransaction(v, _this.mSignalClient);
 		} else if("candidate" == v.contentType){
 			_this.mPeerList.get(v.from).caller//create(_this.mUUID, v.from)
 		    .addIceCandidate(v.content);//.candidate
@@ -98,31 +97,25 @@ function SignalPeer(initialServerUrl) {
 
 	//
 	// if receive offer, then sendAnswer() and establish connection
-	this.sendAnswer = function(v) {
-	    console.log("+++sendAnswer:"+_this.mUUID+","+v.from);
+	this.startAnswerTransaction = function(v, signalClient) {
+	    console.log("+++startAnswerTransaction:"+_this.mUUID+","+v.from);
 		var caller = _this.mPeerList.create(_this.mUUID, v.from)
 		.setEventListener(_this.mObserver)
 	    .createPeerConnection()
-		.setRemoteSDP("offer", v.content);
-		{
-	    	caller.setSignalClient(_this.mSignalClient);
-		}
-		caller.createAnswer();
+		.setRemoteSDP("offer", v.content)
+		.setSignalClient(signalClient)
+		.createAnswer();
 	};
 
 	//
 	// sendOffer() then, onReceiveAnswer()
-	this.sendOffer = function(transfer,uuid) {
-	    console.log("+++sendOffer:"+_this.mUUID+","+uuid);
+	this.startOfferTransaction = function(transfer,uuid, signalClient) {
+	    console.log("+++startOfferTransaction:"+_this.mUUID+","+uuid);
 	    var caller = _this.mPeerList.create(_this.mUUID,uuid)
    		.setEventListener(_this.mObserver)
-	    .createPeerConnection();
-	    if ("server" === transfer) {
-	    	caller.setSignalClient(_this.mSignalClient);
-	    } else {
-	    	
-	    }
-	    caller.createOffer();
+	    .createPeerConnection()
+	    .setSignalClient(_this.mSignalClient)
+	    .createOffer();
 	};
 
 	this.onReceiveAnswer = function(v) {

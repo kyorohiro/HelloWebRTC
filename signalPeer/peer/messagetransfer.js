@@ -1,16 +1,15 @@
 
-
 function MessageTransfer(target) {
 	this.mParent = target;
 
-	this.seneOffer = function(to, from, sdp) {
+	this.sendOffer = function(to, from, sdp) {
 		var cont = {};
 		cont.contentType = "offer";
 		cont.sdp = sdp;
 		this.sendUnicastMessage(to, from, cont);
 	};
 
-	this.seneAnswer = function(to, from, sdp) {
+	this.sendAnswer = function(to, from, sdp) {
 		var cont = {};
 		cont.contentType = "answer";
 		cont.sdp = sdp;
