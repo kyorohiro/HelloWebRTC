@@ -29,9 +29,11 @@ var v = new function() {
 		addLabel(_id, "[connected]"+peer.getTargetUUID());
 		addBr(_id);
 		addButton(_id,"findnode","onPushFindNode(\""+peer.getTargetUUID()+"\");", peer.getTargetUUID());
+		addButton(_id,"good job","onSendHello(\""+peer.getTargetUUID()+"\");", peer.getTargetUUID());
 		addBr(_id);
 		addBr(_id);
    };
+
    this.onJoinNetwork = function(peer,v) {
    		console.log("joinNetwork():------------"+v.from+"------------");
    		if(v.from === _mSignalPeer.getUUID()) {
@@ -98,6 +100,9 @@ function onPushSendHello() {
     _mSignalPeer.sendHello(JSON.stringify(v));
 }
 
+function onSendHello(to) {
+    _mSignalPeer.getMessageProtocol().sendMessage(to,"hello");
+}
 
 //-->
 </script>

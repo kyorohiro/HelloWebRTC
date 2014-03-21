@@ -41,7 +41,18 @@ function MessageProtocol(target) {
 	    mes.nodelen = i;
 	    caller.sendMessage(JSON.stringify(mes));
 	};
-	
+
+	// find peer
+	this.sendMessage = function (uuid, message) {
+		var mes = {};
+		mes.type = "query";
+		mes.command = "message";
+		mes.id = UUID.getId();
+		mes.from = this.mParent.mUUID;
+		mes.target = uuid;
+		mes.content = message;
+		this.mParent.getPeerList().get(uuid).caller.sendMessage(JSON.stringify(mes));
+	}
 	// 
 	this.sendOfferPeer = function() {
 	};
