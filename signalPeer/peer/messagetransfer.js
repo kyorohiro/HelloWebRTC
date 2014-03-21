@@ -3,6 +3,27 @@
 function MessageTransfer(target) {
 	this.mParent = target;
 
+	this.seneOffer = function(to, from, sdp) {
+		var cont = {};
+		cont.contentType = "offer";
+		cont.sdp = sdp;
+		this.sendUnicastMessage(to, from, cont);
+	};
+
+	this.seneAnswer = function(to, from, sdp) {
+		var cont = {};
+		cont.contentType = "answer";
+		cont.sdp = sdp;
+		this.sendUnicastMessage(to, from, cont);
+	};
+
+	this.seneCandidate = function(to, from, candidate) {
+		var cont = {};
+		cont.contentType = "candidate";
+		cont.candidate = candidate;
+		this.sendUnicastMessage(to, from, cont);
+	};
+
 	this.sendUnicastMessage = function(to, from, content) {	
 		var mes = {};
 		mes.messageType = "unicast";
