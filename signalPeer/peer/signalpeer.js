@@ -82,7 +82,7 @@ function SignalPeer(initialServerUrl) {
 	};
 
 	this.addIceCandidate = function(v) {
-	    console.log("######addIceCandidate:");
+	    console.log("######addIceCandidate:"+v.from);
 		_this.mPeerList.get(v.from).caller//create(_this.mUUID, v.from)
 		.addIceCandidate(v.content);//.candidate
 	};
@@ -119,7 +119,7 @@ function SignalPeer(initialServerUrl) {
 	    var caller = _this.mPeerList.create(_this.mUUID,uuid)
    		.setEventListener(_this.mObserver)
 	    .createPeerConnection()
-	    .setSignalClient(_this.mSignalClient)
+	    .setSignalClient(signalClient)
 	    .createOffer();
 	};
 

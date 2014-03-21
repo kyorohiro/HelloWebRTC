@@ -13,20 +13,21 @@ function MessageTransfer(target) {
 	};
 
 	this.onReceiveMessage = function(message) {
-		var body = mes.content;
+		var body = message.content;
 		var v = {};
 		v.contentType = body["contentType"];
 		v.content     = body["body"];
 		v.from        = message["from"];
 		v.to          = message["to"];
-		console.log("###################init sv:"+v.contentType+","+v.from);
-		if ("join" === v.contentType) {
-			this.mPeer.onJoinNetwork(v);
-		} else if ("answer"=== v.contentType) {
+
+		if ("answer"=== v.contentType) {
+			console.log("=======================answer sv:"+v.to+","+v.from);
 			this.mPeer.onReceiveAnswer(v)
 		} else if ("offer" === v.contentType) {
+			console.log("=======================offer sv:"+v.to+","+v.from);
 			this.mPeer.startAnswerTransaction(v, this);
 		} else if("candidate" == v.contentType){
+			console.log("=======================candidate sv:"+v.to+","+v.from);
 			this.mPeer.addIceCandidate(v);
 		}
 	};
@@ -57,7 +58,7 @@ function MessageTransfer(target) {
 		mes.to = to;
 		mes.from = from;
 		mes.content = content;
-		this.mPeerList.get(uuid).caller.sendMessage(JSON.stringify(mes));
+		this.mPeerList.get(to).caller.sendMessage(JSON.stringify(mes));
 	}
 
 	this.onTransferMessage = function(caller, message) {
