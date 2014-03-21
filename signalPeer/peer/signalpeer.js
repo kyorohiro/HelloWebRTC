@@ -40,11 +40,11 @@ function SignalPeer(initialServerUrl) {
 		   };
 		   this.onSetSessionDescription = function(caller, type, sdp) {
 				console.log("###################stun sv:"+type+","+caller.getTargetUUID()+","+_this.mUUID);
-				if("offer" === type) {
-					_this.mSignalClient.sendOffer(caller.getTargetUUID(), _this.mUUID, sdp);
-				} else if("answer" === type) {
-					_this.mSignalClient.sendAnswer(caller.getTargetUUID(), _this.mUUID, sdp);
-				}
+			//	if("offer" === type) {
+			//		_this.mSignalClient.sendOffer(caller.getTargetUUID(), _this.mUUID, sdp);
+			//	} else if("answer" === type) {
+			//		_this.mSignalClient.sendAnswer(caller.getTargetUUID(), _this.mUUID, sdp);
+			//	}
 			};
 			this.onReceiveMessage = function(peer, v) {
 			   var p2pMes = JSON.parse(v);
@@ -100,21 +100,29 @@ function SignalPeer(initialServerUrl) {
 	// if receive offer, then sendAnswer() and establish connection
 	this.sendAnswer = function(v) {
 	    console.log("+++sendAnswer:"+_this.mUUID+","+v.from);
-		_this.mPeerList.create(_this.mUUID, v.from)
+		var caller = _this.mPeerList.create(_this.mUUID, v.from)
 		.setEventListener(_this.mObserver)
 	    .createPeerConnection()
-		.setRemoteSDP("offer", v.content)
-		.createAnswer();
+		.setRemoteSDP("offer", v.content);
+		{
+	    	caller.setSignalClient(_this.mSignalClient);
+		}
+		caller.createAnswer();
 	};
 
 	//
 	// sendOffer() then, onReceiveAnswer()
-	this.sendOffer = function(uuid) {
+	this.sendOffer = function(transfer,uuid) {
 	    console.log("+++sendOffer:"+_this.mUUID+","+uuid);
-	    _this.mPeerList.create(_this.mUUID,uuid)
+	    var caller = _this.mPeerList.create(_this.mUUID,uuid)
    		.setEventListener(_this.mObserver)
-	    .createPeerConnection()
-	    .createOffer();
+	    .createPeerConnection();
+	    if ("server" === transfer) {
+	    	caller.setSignalClient(_this.mSignalClient);
+	    } else {
+	    	
+	    }
+	    caller.createOffer();
 	};
 
 	this.onReceiveAnswer = function(v) {

@@ -15,8 +15,10 @@ var Caller = function Caller(id) {
 	});
 
 	this.mSignalClient = new (function() {
-			this.sendAnswer = function(to,from,sdp) {;}
-			this.sendOffer = function(to,from,sdp) {;}
+			this.sendAnswer = function(to,from,sdp) {
+				console.log("+++sendAnswer()\n");}
+			this.sendOffer = function(to,from,sdp) {
+				console.log("+++sendOffer()\n");}
 	});
 
 	Caller.prototype.setEventListener =function(observer) {
@@ -90,6 +92,7 @@ var Caller = function Caller(id) {
 							sessionDescription, 
 							function() {console.log("+++onSetSessionDescriptionSuccess.");
 								_own.mObserver.onSetSessionDescription(_own, _own.pc.localDescription.type, _own.pc.localDescription.sdp);
+								_own.mSignalClient.sendOffer(_own.getTargetUUID(), _own.getMyUUID(), _own.pc.localDescription.sdp);
 							},
 							function(error) {console.log("+++onSetSessionDescriptionError" + error.toString());}
 					);
@@ -107,6 +110,7 @@ var Caller = function Caller(id) {
 							function() {
 								console.log("+++onSetSessionDescriptionSuccess.");
 								_own.mObserver.onSetSessionDescription(_own, _own.pc.localDescription.type, _own.pc.localDescription.sdp);
+								_own.mSignalClient.sendAnswer(_own.getTargetUUID(), _own.getMyUUID(), _own.pc.localDescription.sdp);
 						    },
 							function(error) {console.log("+++onSetSessionDescriptionError" + error.toString());}
 					);});

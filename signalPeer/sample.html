@@ -88,11 +88,7 @@ function onPushSendJoin() {
 
 function onPushSendOffer(transfer,to) {
     console.log("onPushSendOffer()"+transfer+","+to);
-    if("server" == transfer) { 
-    	_mSignalPeer.sendOffer(to);
-    } else {
-    	_mSignalPeer.sendOffer(to);    	
-    }
+   	_mSignalPeer.sendOffer(transfer,to);
 }
 
 function onPushFindNode(uuid) {
