@@ -46,7 +46,6 @@ function SignalPeer(initialServerUrl) {
 					_this.mSignalClient.sendAnswer(caller.getTargetUUID(), _this.mUUID, sdp);
 				}
 			};
-
 			this.onReceiveMessage = function(peer, v) {
 			   var p2pMes = JSON.parse(v);
 			   _this.onMessageFromPeer(peer, p2pMes);
@@ -54,7 +53,6 @@ function SignalPeer(initialServerUrl) {
 				   _t.mWork.onReceiveMessage(peer, p2pMes);
 			   }
 		   };
-
 		   this.setDecorteWork = function(work) {
 			   _t.mWork = work;
 		   }
@@ -122,7 +120,7 @@ function SignalPeer(initialServerUrl) {
 	this.onReceiveAnswer = function(v) {
 		_this.mPeerList.get(v.from).caller
 		.setRemoteSDP("answer", v.content);
-	}
+	};
 
 	this.getPeerList = function() {
 		return this.mPeerList;
@@ -135,7 +133,7 @@ function SignalPeer(initialServerUrl) {
 	    	var key = keys.pop();
 	    	_this.mMessageProtocol.sendFindNode(key);
 	    }
-	}
+	};
 
 	this.onMessageFromPeer = function(caller, message) {
 	    console.log("###################peer:"+message.from);

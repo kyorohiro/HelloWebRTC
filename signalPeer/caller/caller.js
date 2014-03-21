@@ -14,10 +14,21 @@ var Caller = function Caller(id) {
 		this.onSetSessionDescription = function(caller,event){;}
 	});
 
+	this.mSignalClient = new (function() {
+			this.sendAnswer = function(to,from,sdp) {;}
+			this.sendOffer = function(to,from,sdp) {;}
+	});
+
 	Caller.prototype.setEventListener =function(observer) {
 		this.mObserver = observer;
 		return this;
 	};
+
+	Caller.prototype.setSignalClient =function(client) {
+		this.mSignalClient = client;
+		return this;
+	};
+
 	Caller.prototype.setTargetUUID = function(uuid) {
 		this.mTargetUUID = uuid;
 		return this;
