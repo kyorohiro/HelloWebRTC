@@ -76,6 +76,20 @@ function SignalPeer(initialServerUrl) {
 	//
 	// receive message from initialserver
 	this.onReceiveMessageFromInitServer = function(message) {
+		this.mSignalClient.onReceiveMessage(message);
+	};
+	
+	 this.onJoinNetwork = function(v) {
+    	 console.log("######onJoinNetwork:");
+		 _this.mObserver.onJoinNetwork(this, v);
+	 };
+
+	 this.addIceCandidate = function(v) {
+	    console.log("######addIceCandidate:");
+		_this.mPeerList.get(v.from).caller//create(_this.mUUID, v.from)
+		.addIceCandidate(v.content);//.candidate
+	 };
+	/*
 		var v = {};
 		v.contentType = message["_contentType"];
 		v.content     = message["_content"];
@@ -92,13 +106,13 @@ function SignalPeer(initialServerUrl) {
 			_this.mPeerList.get(v.from).caller//create(_this.mUUID, v.from)
 		    .addIceCandidate(v.content);//.candidate
 		}
-	};
-	this.mSignalClient.setOnMessage(this.onReceiveMessageFromInitServer);
+	};*/
+	//this.mSignalClient.setOnMessage(this.onReceiveMessageFromInitServer);
 
 	//
 	// if receive offer, then sendAnswer() and establish connection
 	this.startAnswerTransaction = function(v, signalClient) {
-	    console.log("+++startAnswerTransaction:"+_this.mUUID+","+v.from);
+	    console.log("######startAnswerTransaction:"+_this.mUUID+","+v.from);
 		var caller = _this.mPeerList.create(_this.mUUID, v.from)
 		.setEventListener(_this.mObserver)
 	    .createPeerConnection()
@@ -110,7 +124,7 @@ function SignalPeer(initialServerUrl) {
 	//
 	// sendOffer() then, onReceiveAnswer()
 	this.startOfferTransaction = function(transfer,uuid, signalClient) {
-	    console.log("+++startOfferTransaction:"+_this.mUUID+","+uuid);
+	    console.log("######startOfferTransaction:"+_this.mUUID+","+uuid);
 	    var caller = _this.mPeerList.create(_this.mUUID,uuid)
    		.setEventListener(_this.mObserver)
 	    .createPeerConnection()
@@ -119,6 +133,7 @@ function SignalPeer(initialServerUrl) {
 	};
 
 	this.onReceiveAnswer = function(v) {
+	    console.log("######onReceiveAnswer()");
 		_this.mPeerList.get(v.from).caller
 		.setRemoteSDP("answer", v.content);
 	};
@@ -136,7 +151,7 @@ function SignalPeer(initialServerUrl) {
 	    }
 	};
 
-
+	this.mSignalClient.setPeer(this);
 
 };
 

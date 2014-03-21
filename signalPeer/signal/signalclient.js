@@ -1,6 +1,40 @@
 var SignalClient = function SignalClient(url) {
 	this.ws = new WebSocket(url);
 	this.mList = new Array();
+
+	this.mPeer = new (function() {
+		this.onReceiveAnswer = function(v) {
+			console.log("+++onReceiveAnswer()\n");}
+		this.addIceCandidate = function(v) {
+			console.log("+++addIceCandidate()\n");}
+		this.startAnswerTransaction = function(v) {
+			console.log("+++startAnswerTransaction()\n");}
+		this.onJoinNetwork = function(v) {
+			console.log("+++onJoinNetwork()\n");}
+	});
+
+	this.setPeer = function(peer) {
+		this.mPeer = peer;
+	};
+
+	this.onReceiveMessage = function(message) {
+		var v = {};
+		v.contentType = message["_contentType"];
+		v.content     = message["_content"];
+		v.from        = message["_from"];
+		v.to          = message["_to"];
+		console.log("###################init sv:"+v.contentType+","+v.from);
+		if ("join" === v.contentType) {
+			this.mPeer.onJoinNetwork(v);
+		} else if ("answer"=== v.contentType) {
+			this.mPeer.onReceiveAnswer(v)
+		} else if ("offer" === v.contentType) {
+			this.mPeer.startAnswerTransaction(v, this.mPeer.getSignalClient());
+		} else if("candidate" == v.contentType){
+			this.mPeer.addIceCandidate(v);
+		}
+	};
+
 	SignalClient.prototype.send = function() {
 		this.ws.send("hello");
 	};
@@ -44,11 +78,6 @@ var SignalClient = function SignalClient(url) {
 		this.ws.send(JSON.stringify(v));
 	};
 
-	this.mOnMessage = null;
-	SignalClient.prototype.setOnMessage = function(f) {
-		this.mOnMessage = f;
-	}
-
 	var _own = this;
 	this.ws.onmessage = function(m) {
 		var parsedData = JSON.parse(m.data);
@@ -60,9 +89,7 @@ var SignalClient = function SignalClient(url) {
 			v.name = "dummy";
 			_own.mList[uuid] = v;
 		}
-		if(_own.mOnMessage != null) {
-			_own.mOnMessage(parsedData);
-		}
+		_own.onReceiveMessage(parsedData);
 	};
 
 	this.ws.onclose = function(m) {
