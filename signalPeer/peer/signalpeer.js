@@ -72,12 +72,6 @@ function SignalPeer(initialServerUrl) {
 	this.joinNetwork = function() {
 		_this.mSignalClient.join(this.mUUID);
 	};
-
-	//
-	// receive message from initialserver
-	this.onReceiveMessageFromInitServer = function(message) {
-		this.mSignalClient.onReceiveMessage(message);
-	};
 	
 	 this.onJoinNetwork = function(v) {
     	 console.log("######onJoinNetwork:");
@@ -89,25 +83,6 @@ function SignalPeer(initialServerUrl) {
 		_this.mPeerList.get(v.from).caller//create(_this.mUUID, v.from)
 		.addIceCandidate(v.content);//.candidate
 	 };
-	/*
-		var v = {};
-		v.contentType = message["_contentType"];
-		v.content     = message["_content"];
-		v.from        = message["_from"];
-		v.to          = message["_to"];
-		console.log("###################init sv:"+v.contentType+","+v.from);
-		if ("join" === v.contentType) {
-			_this.mObserver.onJoinNetwork(this, v);
-		} else if ("answer"=== v.contentType) {
-			_this.onReceiveAnswer(v)
-		} else if ("offer" === v.contentType) {
-			_this.startAnswerTransaction(v, _this.mSignalClient);
-		} else if("candidate" == v.contentType){
-			_this.mPeerList.get(v.from).caller//create(_this.mUUID, v.from)
-		    .addIceCandidate(v.content);//.candidate
-		}
-	};*/
-	//this.mSignalClient.setOnMessage(this.onReceiveMessageFromInitServer);
 
 	//
 	// if receive offer, then sendAnswer() and establish connection
