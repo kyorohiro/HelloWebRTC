@@ -60,7 +60,7 @@ var v = new function() {
  				// create button
 				addLabel("offerlist", "[peer"+v.from+"] "+v.node["node0"]);
 				addBr("offerlist");
-				addButton("offerlist","offer","onPushSendOffer(\""+v.from+"\",\""+v.from+"\");", v.from);
+				addButton("offerlist","offer","onPushSendOffer(\""+v.from+"\",\""+v.node["node0"]+"\");", v.from);
 				addBr("offerlist");
 				addBr("offerlist");
 	    	}
@@ -91,6 +91,7 @@ function onPushSendOffer(transfer,to) {
     if ("server" === transfer) {
    	    _mSignalPeer.startOfferTransaction(transfer,to,_mSignalPeer.getSignalClient());
    	}else {
+   	    _mSignalPeer.startOfferTransaction(transfer,to,_mSignalPeer.getSignalClient());
    	}
    	//sendOffer(transfer,to);
 }
