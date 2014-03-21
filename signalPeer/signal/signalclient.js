@@ -13,13 +13,13 @@ var SignalClient = function SignalClient(url) {
 		this.mPeer = peer;
 	};
 
-	this.onReceiveMessage = function(mes) {
-		var body = mes.content;
+	this.onReceiveMessage = function(message) {
+		var body = message.content;
 		var v = {};
 		v.contentType = body["contentType"];
 		v.content     = body["body"];
-		v.from        = mes["from"];
-		v.to          = mes["to"];
+		v.from        = message["from"];
+		v.to          = message["to"];
 		console.log("###################init sv:"+v.contentType+","+v.from);
 		if ("join" === v.contentType) {
 			this.mPeer.onJoinNetwork(v);

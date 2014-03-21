@@ -13,9 +13,10 @@ function MessageTransfer(target) {
 	};
 
 	this.onReceiveMessage = function(message) {
+		var body = mes.content;
 		var v = {};
-		v.contentType = message["contentType"];
-		v.content     = message["content"];
+		v.contentType = body["contentType"];
+		v.content     = body["body"];
 		v.from        = message["from"];
 		v.to          = message["to"];
 		console.log("###################init sv:"+v.contentType+","+v.from);
@@ -24,7 +25,7 @@ function MessageTransfer(target) {
 		} else if ("answer"=== v.contentType) {
 			this.mPeer.onReceiveAnswer(v)
 		} else if ("offer" === v.contentType) {
-			this.mPeer.startAnswerTransaction(v, this.mPeer.getSignalClient());
+			this.mPeer.startAnswerTransaction(v, this);
 		} else if("candidate" == v.contentType){
 			this.mPeer.addIceCandidate(v);
 		}
@@ -32,21 +33,21 @@ function MessageTransfer(target) {
 	this.sendOffer = function(to, from, sdp) {
 		var cont = {};
 		cont.contentType = "offer";
-		cont.content = sdp;
+		cont.body = sdp;
 		this.sendUnicastMessage(to, from, cont);
 	};
 
 	this.sendAnswer = function(to, from, sdp) {
 		var cont = {};
 		cont.contentType = "answer";
-		cont.content = sdp;
+		cont.body = sdp;
 		this.sendUnicastMessage(to, from, cont);
 	};
 
 	this.seneCandidate = function(to, from, candidate) {
 		var cont = {};
 		cont.contentType = "candidate";
-		cont.candidate = candidate;
+		cont.body = candidate;
 		this.sendUnicastMessage(to, from, cont);
 	};
 
