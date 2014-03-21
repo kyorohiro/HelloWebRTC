@@ -67,7 +67,10 @@ var v = new function() {
 	    }
 	    else if("query" === v.type) {
 		    if("message" === v.command) {
-		    	addLabel("messageList", "["+v.from+"] "+v.content);
+		    	addLabel("messageList", "["+v.from+"] ");
+		    	addBr("messageList");
+		    	addLabel("messageList", " ::"+v.content);
+		    	addBr("messageList");
 		    }
 	    }
    };
