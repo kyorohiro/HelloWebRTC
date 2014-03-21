@@ -62,10 +62,13 @@ var v = new function() {
 				addBr("offerlist");
 				addButton("offerlist","offer","onPushSendOffer(\""+v.from+"\",\""+v.from+"\");", v.from);
 				addBr("offerlist");
-//				addButton("offerlist","findnode","onPushFindNode(\""+v.from+"\");", v.from);
-//				addBr("offerlist");
 				addBr("offerlist");
 	    	}
+	    }
+	    else if("query" === v.type) {
+		    if("message" === v.command) {
+		    	addLabel("messageList", "["+v.from+"] "+v.content);
+		    }
 	    }
    };
 };
@@ -108,9 +111,12 @@ function onSendHello(to) {
 </script>
 </header>
 <body>
-<label id="uuid">uuid_value</label><br><br>
 <button id="join" onclick="onPushSendJoin();">join network(server)</button><br><br>
 <br>
+<div id="messageList">
+<h3>[MessageList]</h3>
+</div>
+
 <div id="offerlist">
 <h3>[PeerList]</h3>
 </div>
