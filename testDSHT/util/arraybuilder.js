@@ -25,6 +25,15 @@ function ArrayBuilder() {
 	this.getLength = function() {
 		return this.mLength;
 	}
+
+	this.toByteBuffer = function() {
+		var buffer = new ArrayBuffer(this.mLength);
+		buffer.mLength = this.mLength;
+		for(var i=0;i<buffer.byteLength;i++) {
+			buffer[i] = this.mBuffer[i];
+		}
+		return buffer;
+	}
 }
 
 try{module.exports = ArrayBuilder;}catch(e){;}
