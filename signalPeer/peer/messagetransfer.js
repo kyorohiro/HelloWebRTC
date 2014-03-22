@@ -1,5 +1,7 @@
 
 function MessageTransfer(target) {
+	var _this = this;
+	this.mBase = new MessageTransferServer(target);
 	this.mParent = target;
 	this.mTransfer = null;
 
@@ -11,6 +13,7 @@ function MessageTransfer(target) {
 	});
 	this.setPeer = function(peer) {
 		this.mPeer = peer;
+		console.log("=======================answer");
 	};
 	this.setTransfer = function(transfer) {
 		this.mTransfer = transfer;
@@ -28,16 +31,17 @@ function MessageTransfer(target) {
 		if ("answer"=== v.contentType) {
 			console.log("=======================answer sv:"+v.to+","+v.from);
 			//v.content =  toURLDecode(toByte(v.content));
-			this.mPeer.onReceiveAnswer(v)
+			_this.mPeer.onReceiveAnswer(v)
 		} else if ("offer" === v.contentType) {
 			console.log("=======================offer sv:"+v.to+","+v.from);
 			//v.content =  toURLDecode(toByte(v.content));
-			this.mPeer.startAnswerTransaction(caller.getTargetUUID(), v);//this.mPeer.getSignalClient());
+			_this.mPeer.startAnswerTransaction(caller.getTargetUUID(), v);//this.mPeer.getSignalClient());
 		} else if("candidate" == v.contentType){
 			console.log("=======================candidate sv:"+v.to+","+v.from);
-			this.mPeer.addIceCandidate(v);
+			_this.mPeer.addIceCandidate(v);
 		}
 	};
+	this.mBase.onReceiveMessage = this.onReceiveMessage;
 	this.sendOffer = function(to, from, sdp) {
 		console.log("=======================send offer sv:"+to+","+from);
 		var cont = {};
@@ -61,47 +65,12 @@ function MessageTransfer(target) {
 		cont.body = candidate;
 		this.sendUnicastMessage(to, from, cont);
 	};
-	this.sendUnicastMessage = function(to, from, content) {	
-		console.log("=======================sendUnicastMessage :"+to+","+from+","+this.mTransfer);
-		var mes = {};
-		mes.messageType = "unicast";
-		mes.to = to;
-		mes.from = from;
-		mes.content = content;
-		this.mParent.getPeerList().get(this.mTransfer).caller.sendMessage(JSON.stringify(mes));
-//		this.mParent.getPeerList().get(to).caller.sendMessage(JSON.stringify(mes));
-	}
 
-	//
-	// static
-	//
 	this.onTransferMessage = function(caller, message) {
-
-	    var p2pMes = JSON.parse(message);
-    	var to = p2pMes.to;
-    	var from = p2pMes.from;
-    	var content = p2pMes.content;
-
-    	if("unicast" == p2pMes.messageType) {
-    		console.log("=======================onTransferMessage sv:");
-    		console.log("===from      :" + from);
-    		console.log("===to        :" + to);
-    		console.log("===transfer  :" + caller.getMyUUID());
-    		console.log("===target    :" + caller.getTargetUUID());
-
-    		//this.setPeer(caller);
-    		var mes = {};
-    		mes.to = to;
-    		mes.from = from;
-    		mes.content = content;
-    		mes.messageType = "transfer";
-    		var targetPeer = this.mParent.getPeerList().get(to).caller;
-    		targetPeer.sendMessage(JSON.stringify(mes));
-	    }
-    	else if("transfer" == p2pMes.messageType) {
-    		console.log("=======================onTransferMessage transfer:" + caller.getTargetUUID());
-    		this.onReceiveMessage(caller, p2pMes);
-    	}
+		this.mBase.onTransferMessage(caller, message);
+	}
+	this.sendUnicastMessage = function(to, from, content) {	
+		this.mBase._sendUnicastMessage(this.mTransfer,to, from, content);
 	}
 }
 

@@ -1,25 +1,11 @@
 
 function MessageTransferServer(target) {
 	this.mParent = target;
-	this.mTransfer = null;
 
-	this.mPeer = new (function() {
-		this.onReceiveAnswer = function(v) {console.log("+++onReceiveAnswer()\n");}
-		this.addIceCandidate = function(v) {console.log("+++addIceCandidate()\n");}
-		this.startAnswerTransaction = function(v) {console.log("+++startAnswerTransaction()\n");}
-		this.onJoinNetwork = function(v) {console.log("+++onJoinNetwork()\n");}
-	});
-	this.setPeer = function(peer) {
-		this.mPeer = peer;
-	};
-	this.setTransfer = function(transfer) {
-		this.mTransfer = transfer;
+	MessageTransferServer.prototype.onReceiveMessage = function(caller,message) {
 	};
 
-	this.onReceiveMessage = function(caller,message) {
-	};
-
-	this.sendUnicastMessage = function(transfer, to, from, content) {	
+	MessageTransferServer.prototype._sendUnicastMessage = function(transfer, to, from, content) {	
 		console.log("=======================sendUnicastMessage :"+to+","+from+","+transfer);
 		var mes = {};
 		mes.messageType = "unicast";
@@ -32,7 +18,7 @@ function MessageTransferServer(target) {
 	//
 	// static
 	//
-	this.onTransferMessage = function(caller, message) {
+	MessageTransferServer.prototype.onTransferMessage = function(caller, message) {
 
 	    var p2pMes = JSON.parse(message);
 
