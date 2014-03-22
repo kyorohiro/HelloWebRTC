@@ -31,6 +31,10 @@ var Caller = function Caller(id) {
 		return this;
 	};
 
+	Caller.prototype.getSignalClient =function() {
+		return this.mSignalClient;
+	};
+	
 	Caller.prototype.setTargetUUID = function(uuid) {
 		this.mTargetUUID = uuid;
 		return this;

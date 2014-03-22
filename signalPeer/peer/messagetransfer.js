@@ -16,7 +16,7 @@ function MessageTransfer(target) {
 		this.mTransfer = transfer;
 	};
 
-	this.onReceiveMessage = function(message) {
+	this.onReceiveMessage = function(caller,message) {
 		var body = message.content;
 		if(body == undefined || body == null) {return;}
 		var v = {};
@@ -32,7 +32,7 @@ function MessageTransfer(target) {
 		} else if ("offer" === v.contentType) {
 			console.log("=======================offer sv:"+v.to+","+v.from);
 			//v.content =  toURLDecode(toByte(v.content));
-			this.mPeer.startAnswerTransaction(v, this.mPeer.getMessageTransfer());//this.mPeer.getSignalClient());
+			this.mPeer.startAnswerTransaction(caller.getTargetUUID(), v);//this.mPeer.getSignalClient());
 		} else if("candidate" == v.contentType){
 			console.log("=======================candidate sv:"+v.to+","+v.from);
 			this.mPeer.addIceCandidate(v);
@@ -72,6 +72,9 @@ function MessageTransfer(target) {
 //		this.mParent.getPeerList().get(to).caller.sendMessage(JSON.stringify(mes));
 	}
 
+	//
+	// static
+	//
 	this.onTransferMessage = function(caller, message) {
 
 	    var p2pMes = JSON.parse(message);
@@ -91,15 +94,13 @@ function MessageTransfer(target) {
     		mes.to = to;
     		mes.from = from;
     		mes.content = content;
-    		mes.messageType = "transfer"; 
+    		mes.messageType = "transfer";
     		var targetPeer = this.mParent.getPeerList().get(to).caller;
     		targetPeer.sendMessage(JSON.stringify(mes));
 	    }
     	else if("transfer" == p2pMes.messageType) {
     		console.log("=======================onTransferMessage transfer:" + caller.getTargetUUID());
-			var t = this.mPeer.getMessageTransfer().setTransfer(caller.getTargetUUID());
-    		this.setTransfer(caller.getTargetUUID());
-    		this.onReceiveMessage(p2pMes);
+    		this.onReceiveMessage(caller, p2pMes);
     	}
 	}
 }

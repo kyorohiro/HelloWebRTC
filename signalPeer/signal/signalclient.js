@@ -26,7 +26,7 @@ var SignalClient = function SignalClient(url) {
 		} else if ("answer"=== v.contentType) {
 			this.mPeer.onReceiveAnswer(v)
 		} else if ("offer" === v.contentType) {
-			this.mPeer.startAnswerTransaction(v, this.mPeer.getSignalClient());
+			this.mPeer.startAnswerTransaction("server",v);
 		} else if("candidate" == v.contentType){
 			this.mPeer.addIceCandidate(v);
 		}
@@ -105,5 +105,9 @@ var SignalClient = function SignalClient(url) {
 	this.ws.onclose = function(m) {
 		console.log("--onClose()"+m);
 	};
+
+	this.onTransferMessage = function(caller, message) {
+	
+	}
 };
 
