@@ -1,0 +1,130 @@
+<html>
+<header>
+<title>sample</title>
+<script src="util/encoder.js" type="text/javascript"></script>
+<script src="gui/testgui.js" type="text/javascript"></script>
+<script src="signal/signalclient.js" type="text/javascript"></script>
+<script src="caller/caller.js" type="text/javascript"></script>
+<script src="caller/callerinfo.js" type="text/javascript"></script>
+<script src="peer/signalpeer.js" type="text/javascript"></script>
+<script src="util/uuid.njs" type="text/javascript"></script>
+<script src="peer/messagetransferbase.js" type="text/javascript"></script>
+<script src="peer/messagetransfer.js" type="text/javascript"></script>
+<script src="peer/messageprotocol.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+<!--
+var _mSignalPeer = null;
+var v = new function() {
+   this.onOpen = function(peer,v) {
+  		console.log("onOpen():--"+peer.getTargetUUID()+"-----");
+  		var _id = peer.getTargetUUID(); 
+  		// remove
+		{
+			var e = document.getElementById(_id);
+			if(e != undefined && e != null) {
+				e.parentNode.removeChild(e);
+			}
+		}
+		// create button
+		addDiv("offerlist",_id);
+		addLabel(_id, "[connected]"+peer.getTargetUUID());
+		addBr(_id);
+		addButton(_id,"findnode","onPushFindNode(\""+peer.getTargetUUID()+"\");", peer.getTargetUUID());
+		addButton(_id,"good job","onSendHello(\""+peer.getTargetUUID()+"\");", peer.getTargetUUID());
+		addBr(_id);
+		addBr(_id);
+   };
+
+   this.onJoinNetwork = function(peer,v) {
+   		console.log("joinNetwork():------------"+v.from+"------------");
+   		if(v.from === _mSignalPeer.getUUID()) {
+   			return;
+   		}
+ 		// create button
+ 		var _id = v.from;
+		addDiv("offerlist",_id);
+		addLabel(_id, "[server] "+v.from);
+		addBr(_id);
+		addButton(_id,"offer","onPushSendOffer(\"server\",\""+v.from+"\");", v.from);
+		addBr(_id);
+		addBr(_id);
+   };
+
+   this.onReceiveMessage = function(peer, v) {
+   		console.log("onReceiveMessage:------------------------");
+
+   		if("response" === v.type) {
+	    	if("findnode" === v.command) {
+	    	   	if(_mSignalPeer.getUUID() === v.node["node0"]) {
+   					return;
+   				}
+ 				// create button
+		 		var _id = v.node["node0"];
+				addDiv("offerlist",_id);
+				addLabel(_id, "[peer"+v.from+"] "+v.node["node0"]);
+				addBr(_id);
+				addButton(_id,"offer","onPushSendOffer(\""+v.from+"\",\""+v.node["node0"]+"\");", v.from);
+				addBr(_id);
+				addBr(_id);
+	    	}
+	    }
+	    else if("query" === v.type) {
+		    if("message" === v.command) {
+		    	addLabel("messageList", "["+v.from+"] ");
+		    	addBr("messageList");
+		    	addLabel("messageList", " ::"+v.content);
+		    	addBr("messageList");
+		    }
+	    }
+   };
+};
+
+window.onload = function() {
+	_mSignalPeer = new SignalPeer("ws://localhost:8080");
+	_mSignalPeer.setEventListener(v);
+}
+
+function onPushSendJoin() {
+	console.log("onPushSendJoin()");
+    _mSignalPeer.joinNetwork();
+}
+
+function onPushSendOffer(transfer,to) {
+    console.log("onPushSendOffer()"+transfer+","+to);
+   _mSignalPeer.startOfferTransaction(transfer,to);
+}
+
+function onPushFindNode(uuid) {
+    console.log("onPushFindNode():"+uuid);
+    _mSignalPeer.getMessageProtocol().sendFindNode(uuid);
+}
+
+
+function onPushSendHello() {
+    console.log("onPushSendHello()");
+    _mSignalPeer.sendHello(JSON.stringify(v));
+}
+
+function onSendHello(to) {
+    _mSignalPeer.getMessageProtocol().sendMessage(to,"hello");
+}
+
+//-->
+</script>
+</header>
+<body>
+<button id="join" onclick="onPushSendJoin();">join network(server)</button><br><br>
+<br>
+<div id="messageList">
+<h3>[MessageList]</h3>
+</div>
+
+<div id="offerlist">
+<h3>[PeerList]</h3>
+</div>
+
+
+</body>
+</html>
+

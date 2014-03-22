@@ -8,4 +8,6 @@ Hello WebRTC
    exchange sdp information by websocket server.
 4. signalPeer(almost ok)
    exchange sdp information by smart peer.
+5. testDSHT(now creating)
+   distribute sloopy hash table sample
 
