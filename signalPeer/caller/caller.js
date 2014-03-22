@@ -101,14 +101,14 @@ var Caller = function Caller(id) {
 	};
 
 	Caller.prototype.createAnswer = function () {
-		console.log("+++createAnsert()\n");
+		console.log("+++createAnsert()======\n");
 		this.pc.createAnswer(
 				function _onSetLocalAndMessage (sessionDescription) {
-					console.log("+++setLocalAndSendMessage obj="+sessionDescription+"\n");
+					console.log("+++setLocalAndSendMessage obj="+sessionDescription+"===============================\n");
 					_own.pc.setLocalDescription(
 							sessionDescription, 
 							function() {
-								console.log("+++onSetSessionDescriptionSuccess.");
+								console.log("+++onSetSessionDescriptionSuccess.=========================");
 								_own.mObserver.onSetSessionDescription(_own, _own.pc.localDescription.type, _own.pc.localDescription.sdp);
 								_own.mSignalClient.sendAnswer(_own.getTargetUUID(), _own.getMyUUID(), _own.pc.localDescription.sdp);
 						    },

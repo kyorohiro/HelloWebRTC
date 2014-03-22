@@ -32,7 +32,7 @@ function MessageTransfer(target) {
 		} else if ("offer" === v.contentType) {
 			console.log("=======================offer sv:"+v.to+","+v.from);
 			//v.content =  toURLDecode(toByte(v.content));
-			this.mPeer.startAnswerTransaction(v, this.mPeer.getSignalClient());
+			this.mPeer.startAnswerTransaction(v, this.mPeer.getMessageTransfer());//this.mPeer.getSignalClient());
 		} else if("candidate" == v.contentType){
 			console.log("=======================candidate sv:"+v.to+","+v.from);
 			this.mPeer.addIceCandidate(v);
@@ -96,7 +96,9 @@ function MessageTransfer(target) {
     		targetPeer.sendMessage(JSON.stringify(mes));
 	    }
     	else if("transfer" == p2pMes.messageType) {
-    		this.setTransfer(caller.getMyUUID());
+    		console.log("=======================onTransferMessage transfer:" + caller.getTargetUUID());
+			var t = this.mPeer.getMessageTransfer().setTransfer(caller.getTargetUUID());
+    		this.setTransfer(caller.getTargetUUID());
     		this.onReceiveMessage(p2pMes);
     	}
 	}
