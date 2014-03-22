@@ -14,24 +14,9 @@ function MessageTransfer(target) {
 	this.setPeer = function(peer) {this.mPeer = peer;};
 	this.setTransfer = function(transfer) {this.mTransfer = transfer;};
 
-	this.onReceiveMessage = function(caller,message) {
-		var body = message.content;
-		if(body == undefined || body == null) {return;}
-		var v = {};
-		v.contentType = body["contentType"];
-		v.content     = body["body"];
-		v.from        = message["from"];
-		v.to          = message["to"];
-		console.log("======================="+v.contentType+":"+v.to+","+v.from);
-		if ("answer"=== v.contentType) {
-			_this.mPeer.onReceiveAnswer(v)
-		} else if ("offer" === v.contentType) {
-			_this.mPeer.startAnswerTransaction(caller.getTargetUUID(), v);//this.mPeer.getSignalClient());
-		} else if("candidate" == v.contentType){
-			_this.mPeer.addIceCandidate(v);
-		}
-	};
-	this.mBase.onReceiveMessage = this.onReceiveMessage;
+	//
+	// send message
+	//
 	this.sendOffer = function(to, from, sdp) {
 		console.log("=======================send offer sv:"+to+","+from);
 		var cont = {};
@@ -56,9 +41,35 @@ function MessageTransfer(target) {
 		this.sendUnicastMessage(to, from, cont);
 	};
 
+	//
+	// receive message
+	//
+	this.onReceiveMessage = function(caller,message) {
+		var body = message.content;
+		if(body == undefined || body == null) {return;}
+		var v = {};
+		v.contentType = body["contentType"];
+		v.content     = body["body"];
+		v.from        = message["from"];
+		v.to          = message["to"];
+		console.log("======================="+v.contentType+":"+v.to+","+v.from);
+		if ("answer"=== v.contentType) {
+			_this.mPeer.onReceiveAnswer(v)
+		} else if ("offer" === v.contentType) {
+			_this.mPeer.startAnswerTransaction(caller.getTargetUUID(), v);//this.mPeer.getSignalClient());
+		} else if("candidate" == v.contentType){
+			_this.mPeer.addIceCandidate(v);
+		}
+	};
+
+	//
+	// extends base
+	this.mBase.onReceiveMessage = this.onReceiveMessage;
+	
 	this.onTransferMessage = function(caller, message) {
 		this.mBase.onTransferMessage(caller, message);
 	}
+ 
 	this.sendUnicastMessage = function(to, from, content) {	
 		this.mBase._sendUnicastMessage(this.mTransfer,to, from, content);
 	}
