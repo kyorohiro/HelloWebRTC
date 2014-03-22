@@ -22,15 +22,12 @@ function MessageTransfer(target) {
 		v.content     = body["body"];
 		v.from        = message["from"];
 		v.to          = message["to"];
-
+		console.log("======================="+v.contentType+":"+v.to+","+v.from);
 		if ("answer"=== v.contentType) {
-			console.log("=======================answer sv:"+v.to+","+v.from);
 			_this.mPeer.onReceiveAnswer(v)
 		} else if ("offer" === v.contentType) {
-			console.log("=======================offer sv:"+v.to+","+v.from);
 			_this.mPeer.startAnswerTransaction(caller.getTargetUUID(), v);//this.mPeer.getSignalClient());
 		} else if("candidate" == v.contentType){
-			console.log("=======================candidate sv:"+v.to+","+v.from);
 			_this.mPeer.addIceCandidate(v);
 		}
 	};
