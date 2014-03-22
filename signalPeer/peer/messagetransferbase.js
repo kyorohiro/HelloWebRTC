@@ -6,7 +6,10 @@ function MessageTransferBase(target) {
 	};
 
 	MessageTransferBase.prototype._sendUnicastMessage = function(transfer, to, from, content) {	
-		console.log("=======================sendUnicastMessage :"+to+","+from+","+transfer);
+		console.log("======sendUnicastMessage :");
+		console.log("===from      :" + from);
+		console.log("===to        :" + to);
+		console.log("===transfer  :" + transfer);
 		var mes = {};
 		mes.messageType = "unicast";
 		mes.to = to;
@@ -16,17 +19,15 @@ function MessageTransferBase(target) {
 	}
 
 	MessageTransferBase.prototype.onTransferMessage = function(caller, message) {
-
 	    var p2pMes = JSON.parse(message);
 
     	if("unicast" == p2pMes.messageType) {
-    		console.log("=======================onTransferMessage sv:");
+    		console.log("======onTransferMessage:");
     		console.log("===from      :" + p2pMes.from);
     		console.log("===to        :" + p2pMes.to);
     		console.log("===transfer  :" + caller.getMyUUID());
     		console.log("===target    :" + caller.getTargetUUID());
 
-    		//this.setPeer(caller);
     		var mes = {};
     		mes.to = p2pMes.to;
     		mes.from = p2pMes.from;
