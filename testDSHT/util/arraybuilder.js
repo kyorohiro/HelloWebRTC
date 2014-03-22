@@ -1,11 +1,19 @@
-function ArrayBuilder() {
-	this.mBuffer = new ArrayBuffer(1024);
+function ArrayBuilder(size) {
+	this.mBuffer = new ArrayBuffer(size);
 	this.mLength = 0;
 
 	this.appendText = function(text) {
 		this.update(text.length);
 		for(var i=0;i<text.length;i++) {
 			this.mBuffer[this.mLength] = text.charCodeAt(i);
+			this.mLength++;
+		}
+	};
+
+	this.appendBytes = function(bytes) {
+		this.update(bytes.byteLength);
+		for(var i=0;i<bytes.byteLength;i++) {
+			this.mBuffer[this.mLength] = bytes[i];
 			this.mLength++;
 		}
 	};
@@ -29,7 +37,7 @@ function ArrayBuilder() {
 	this.toByteBuffer = function() {
 		var buffer = new ArrayBuffer(this.mLength);
 		buffer.mLength = this.mLength;
-		for(var i=0;i<buffer.byteLength;i++) {
+		for (var i=0;i<buffer.byteLength;i++) {
 			buffer[i] = this.mBuffer[i];
 		}
 		return buffer;
