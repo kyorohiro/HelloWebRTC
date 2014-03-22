@@ -8,8 +8,9 @@ function SignalPeer(initialServerUrl) {
 	this.mSignalClient = new SignalClient(initialServerUrl);
 	this.mMessageTransfer = new MessageTransfer(this);
 	this.mMessageProtocol = new MessageProtocol(this);
-	
-	this.getMessageTransfer = function() {
+	this.mCurrentSignal = this.mSignalClient;
+	this.getMessageTransfer = function(transfer) {
+		this.mMessageTransfer.setTransfer(transfer);
 		return this.mMessageTransfer;
 	};
 
@@ -40,13 +41,15 @@ function SignalPeer(initialServerUrl) {
 			   if(_t.mWork != null&&_t.mWork.onIceCandidate != undefined&&_t.mWork.onIceCandidate != null) {
 				   _t.mWork.onIceCandidate(caller,event);
 			   }
-			   _this.mSignalClient.sendCandidate(caller.getTargetUUID(), _this.mUUID, event.candidate);
+			   _this.mCurrentSignal.sendCandidate(caller.getTargetUUID(), _this.mUUID, event.candidate);
+//			   _this.mSignalClient.sendCandidate(caller.getTargetUUID(), _this.mUUID, event.candidate);
 		   };
 		   this.onSetSessionDescription = function(caller, type, sdp) {
 				console.log("###################stun sv:"+type+","+caller.getTargetUUID()+","+_this.mUUID);
 			};
 			this.onReceiveMessage = function(peer, v) {
 			   var p2pMes = JSON.parse(v);
+			   _this.getMessageTransfer().onTransferMessage(peer, v);;//onReceiveMessage(peer, v);
 			   _this.getMessageProtocol().onReceiveMessage(peer, v);
 			   if(_t.mWork != null&&_t.mWork.onReceiveMessage != undefined&&_t.mWork.onReceiveMessage != null) {
 				   _t.mWork.onReceiveMessage(peer, p2pMes);
@@ -96,12 +99,14 @@ function SignalPeer(initialServerUrl) {
 	//
 	// if receive offer, then sendAnswer() and establish connection
 	this.startAnswerTransaction = function(v, signalClient) {
+		this.mCurrentSignal = signalClient;
 	    console.log("######startAnswerTransaction:"+_this.mUUID+","+v.from);
+	    console.log("######startAnswerTransaction:"+v.content);
 		var caller = _this.mPeerList.create(_this.mUUID, v.from)
 		.setEventListener(_this.mObserver)
+		.setSignalClient(signalClient)
 	    .createPeerConnection()
 		.setRemoteSDP("offer", v.content)
-		.setSignalClient(signalClient)
 		.createAnswer();
 	};
 	//
@@ -115,6 +120,7 @@ function SignalPeer(initialServerUrl) {
 	//
 	// sendOffer() then, onReceiveAnswer()
 	this.startOfferTransaction = function(transfer,uuid, signalClient) {
+		this.mCurrentSignal = signalClient;
 	    console.log("######startOfferTransaction:"+_this.mUUID+","+uuid);
 	    var caller = _this.mPeerList.create(_this.mUUID,uuid)
    		.setEventListener(_this.mObserver)
@@ -133,6 +139,6 @@ function SignalPeer(initialServerUrl) {
 	};
 
 	this.mSignalClient.setPeer(this);
-
+	this.mMessageTransfer.setPeer(this);
 };
 

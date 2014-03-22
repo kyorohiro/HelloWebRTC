@@ -1,6 +1,7 @@
 <html>
 <header>
 <title>sample</title>
+<script src="util/encoder.js" type="text/javascript"></script>
 <script src="gui/testgui.js" type="text/javascript"></script>
 <script src="signal/signalclient.js" type="text/javascript"></script>
 <script src="caller/caller.js" type="text/javascript"></script>
@@ -93,7 +94,7 @@ function onPushSendOffer(transfer,to) {
     if ("server" === transfer) {
    	    _mSignalPeer.startOfferTransaction(transfer,to,_mSignalPeer.getSignalClient());
   	}else {
-   	    _mSignalPeer.startOfferTransaction(transfer,to,_mSignalPeer.getMessageTransfer());
+   	    _mSignalPeer.startOfferTransaction(transfer,to,_mSignalPeer.getMessageTransfer(transfer));
    	}
 }
 

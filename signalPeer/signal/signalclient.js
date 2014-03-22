@@ -20,7 +20,7 @@ var SignalClient = function SignalClient(url) {
 		v.content     = body["body"];
 		v.from        = message["from"];
 		v.to          = message["to"];
-		console.log("###################init sv:"+v.contentType+","+v.from);
+		console.log("::::::::::::::::onReeive"+v.contentType+","+v.from);
 		if ("join" === v.contentType) {
 			this.mPeer.onJoinNetwork(v);
 		} else if ("answer"=== v.contentType) {
@@ -37,6 +37,7 @@ var SignalClient = function SignalClient(url) {
 	};
 
 	SignalClient.prototype.join = function(from) {
+		console.log("::::::::::::::::join");
 		var v = {};
 		var b = {};
 		v["from"]        = from;
@@ -48,6 +49,7 @@ var SignalClient = function SignalClient(url) {
 	};
 
 	SignalClient.prototype.sendOffer = function(to, from, content) {
+		console.log("::::::::::::::::sendOffer");
 		var v = {};
 		var b = {};
 		v["to"]          = to;
@@ -60,6 +62,7 @@ var SignalClient = function SignalClient(url) {
 	};
 
 	SignalClient.prototype.sendCandidate = function(to, from, content) {
+		console.log("::::::::::::::::sendCandidate");
 		var v = {};
 		var b = {};
 		v["to"]          = to;
@@ -72,6 +75,7 @@ var SignalClient = function SignalClient(url) {
 	};
 
 	SignalClient.prototype.sendAnswer = function(to, from, content) {
+		console.log("::::::::::::::::sendAnswer");
 		var v = {};
 		var b = {};
 		v["to"]          = to;
@@ -85,6 +89,7 @@ var SignalClient = function SignalClient(url) {
 
 	var _own = this;
 	this.ws.onmessage = function(m) {
+		console.log("::::::::::::::::pnmessage");
 		var parsedData = JSON.parse(m.data);
 		var contentType = parsedData["_contentType"];
 		var uuid = parsedData["_from"];
