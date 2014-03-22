@@ -6,5 +6,6 @@ Hello WebRTC
    connect peer. and send text message.
 3. signalServer(almost ok)
    exchange sdp information by websocket server.
-4. signalPeer(now creatring)
+4. signalPeer(almost ok)
    exchange sdp information by smart peer.
+
