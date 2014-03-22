@@ -1,7 +1,7 @@
 
 function MessageTransfer(target) {
 	var _this = this;
-	this.mBase = new MessageTransferServer(target);
+	this.mBase = new MessageTransferBase(target);
 	this.mParent = target;
 	this.mTransfer = null;
 
@@ -11,13 +11,8 @@ function MessageTransfer(target) {
 		this.startAnswerTransaction = function(v) {console.log("+++startAnswerTransaction()\n");}
 		this.onJoinNetwork = function(v) {console.log("+++onJoinNetwork()\n");}
 	});
-	this.setPeer = function(peer) {
-		this.mPeer = peer;
-		console.log("=======================answer");
-	};
-	this.setTransfer = function(transfer) {
-		this.mTransfer = transfer;
-	};
+	this.setPeer = function(peer) {this.mPeer = peer;};
+	this.setTransfer = function(transfer) {this.mTransfer = transfer;};
 
 	this.onReceiveMessage = function(caller,message) {
 		var body = message.content;
@@ -30,11 +25,9 @@ function MessageTransfer(target) {
 
 		if ("answer"=== v.contentType) {
 			console.log("=======================answer sv:"+v.to+","+v.from);
-			//v.content =  toURLDecode(toByte(v.content));
 			_this.mPeer.onReceiveAnswer(v)
 		} else if ("offer" === v.contentType) {
 			console.log("=======================offer sv:"+v.to+","+v.from);
-			//v.content =  toURLDecode(toByte(v.content));
 			_this.mPeer.startAnswerTransaction(caller.getTargetUUID(), v);//this.mPeer.getSignalClient());
 		} else if("candidate" == v.contentType){
 			console.log("=======================candidate sv:"+v.to+","+v.from);

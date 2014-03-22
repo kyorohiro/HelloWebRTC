@@ -1,11 +1,11 @@
 
-function MessageTransferServer(target) {
+function MessageTransferBase(target) {
 	this.mParent = target;
 
-	MessageTransferServer.prototype.onReceiveMessage = function(caller,message) {
+	MessageTransferBase.prototype.onReceiveMessage = function(caller,message) {
 	};
 
-	MessageTransferServer.prototype._sendUnicastMessage = function(transfer, to, from, content) {	
+	MessageTransferBase.prototype._sendUnicastMessage = function(transfer, to, from, content) {	
 		console.log("=======================sendUnicastMessage :"+to+","+from+","+transfer);
 		var mes = {};
 		mes.messageType = "unicast";
@@ -15,10 +15,7 @@ function MessageTransferServer(target) {
 		this.mParent.getPeerList().get(transfer).caller.sendMessage(JSON.stringify(mes));
 	}
 
-	//
-	// static
-	//
-	MessageTransferServer.prototype.onTransferMessage = function(caller, message) {
+	MessageTransferBase.prototype.onTransferMessage = function(caller, message) {
 
 	    var p2pMes = JSON.parse(message);
 
