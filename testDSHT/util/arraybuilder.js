@@ -28,11 +28,11 @@ function ArrayBuilder(size) {
 			this.mBuffer = next;
 			next = null;
 		}
-	}
+	};
 
 	this.getLength = function() {
 		return this.mLength;
-	}
+	};
 
 	this.toByteBuffer = function() {
 		var buffer = new ArrayBuffer(this.mLength);
@@ -41,7 +41,15 @@ function ArrayBuilder(size) {
 			buffer[i] = this.mBuffer[i];
 		}
 		return buffer;
-	}
+	};
+
+	this.toText = function() {
+		var text = "";
+		for(var i=0;i<this.mLength;i++) {
+			text +=String.fromCharCode(this.mBuffer[i]);
+		}
+		return text;
+	};
 }
 
 try{module.exports = ArrayBuilder;}catch(e){;}
