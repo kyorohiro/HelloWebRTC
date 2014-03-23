@@ -11,16 +11,33 @@ function Bencode() {
 			case 0x64:{ //d:diction
 				obj.content = {};
 				i++;//d
-				var key = this.decodeArrayBuffer(builder, i, length);
-				var o = this.decodeArrayBuffer(builder, key.i, length);
-				obj.content[key.content] = o.content;
-				obj.i = o.i;
-				i++;//e
+				do {
+					if(buffer[j] ==0x3a) {
+						j++;
+						break;
+					}
+					var key = this.decodeArrayBuffer(builder, i, length);
+					var o = this.decodeArrayBuffer(builder, key.i, length);
+					obj.content[key.content] = o.content;
+					obj.i = o.i;
+					i = obj.i;
+				} while(true);
+				i++;
+				//e
 				return obj;
 			}
 			case 0x69: { //i:number
 				i++;
-				obj.content = parseInt(builder.subString(i,1));i++
+				var j=i;
+				var len =0;
+				for(;j<length;j++) {
+					if(buffer[j] ==0x3a) {
+						j++;
+						break;
+					}
+					len++;
+				}
+				obj.content = parseInt(builder.subString(i,len));i++
 				i++;//e
 				obj.i =i;
 				break;				
