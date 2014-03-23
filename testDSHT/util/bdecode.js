@@ -1,9 +1,8 @@
 var ArrayBuilder = require('../util/arraybuilder.js');
 var Encoder = require('../util/encoder.js');
 
-function Bdecode() {
-	this.root = {};
-
+function Bdecode(mode) {
+	this.mode = mode;
 	this.decodeArrayBuffer = function(builder, start, length) {
 		var calcParam = {};
 		calcParam.i = start;
@@ -47,8 +46,8 @@ function Bdecode() {
 
 	this._decodeNumber = function(calcParam) {
 		var buffer = calcParam.builder.getArrayBuffer();
-		calcParam.i++;//i
 		var ret = 0;
+		calcParam.i++;//i
 		for(;calcParam.i<calcParam.length;calcParam.i++) {
 			if(buffer[calcParam.i] ==0x3a) {
 				break;
@@ -61,16 +60,21 @@ function Bdecode() {
 
 	this._decodeText = function(calcParam) {
 		var buffer = calcParam.builder.getArrayBuffer();
-		var len = "";
+		var len = 0;
 		for(;calcParam.i<calcParam.length;calcParam.i++) {
 			if(buffer[calcParam.i] ==0x3a) {
 				calcParam.i++;//:
 				break;
 			}
-			len += (buffer[calcParam.i]-48);
+			len = len*10+(buffer[calcParam.i]-48);
 		}
-		var ret = calcParam.builder.subString(calcParam.i,parseInt(len));
-		calcParam.i = calcParam.i+parseInt(len);
+		var ret = "";
+		if(this.mode == "text") {
+			ret = Encoder.subString(buffer, calcParam.i, len);
+		} else {
+			ret = Encoder.subString(buffer, calcParam.i, len);		
+		}
+		calcParam.i = calcParam.i+len;
 		return ret;
 	}
 }
