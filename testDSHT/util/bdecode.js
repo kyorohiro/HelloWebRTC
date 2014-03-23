@@ -72,7 +72,7 @@ function Bdecode(mode) {
 		if(this.mode == "text") {
 			ret = Encoder.subString(buffer, calcParam.i, len);
 		} else {
-			ret = Encoder.subString(buffer, calcParam.i, len);		
+			ret = Encoder.subBytes(buffer, calcParam.i, len);		
 		}
 		calcParam.i = calcParam.i+len;
 		return ret;

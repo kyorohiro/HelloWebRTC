@@ -17,6 +17,7 @@ Encoder.toString = function(buffer) {
 	return message;
 };
 
+
 Encoder.subString = function(buffer, start, length) {
 	var text = "";
 	for(var i=start;i<start+length;i++) {
@@ -25,6 +26,14 @@ Encoder.subString = function(buffer, start, length) {
 	return text;
 };
 
+Encoder.subBytes = function(buffer, start, length) {
+	var ret = new ArrayBuffer(length);
+	var j=0;
+	for(var i=start;i<start+length;i++) {
+		ret[j]= buffer[i];
+	}
+	return ret;
+};
 
 Encoder.toURLEncode = function(buffer) {
 	var message = "";
