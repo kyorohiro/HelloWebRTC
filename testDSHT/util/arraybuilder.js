@@ -34,6 +34,10 @@ function ArrayBuilder(size) {
 		return this.mLength;
 	};
 
+	this.getArrayBuffer = function() {
+		return this.mBuffer;
+	};
+
 	this.toByteBuffer = function() {
 		var buffer = new ArrayBuffer(this.mLength);
 		buffer.mLength = this.mLength;
@@ -50,6 +54,14 @@ function ArrayBuilder(size) {
 		}
 		return text;
 	};
+
+	this.subString = function(start, length) {
+		var text = "";
+		for(var i=start;i<this.mLength&&i<(start+length);i++) {
+			text +=String.fromCharCode(this.mBuffer[i]);
+		}
+		return text;
+	}
 }
 
 try{module.exports = ArrayBuilder;}catch(e){;}

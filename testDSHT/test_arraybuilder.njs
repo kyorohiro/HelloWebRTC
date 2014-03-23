@@ -24,3 +24,9 @@ var ArrayBuilder = require('./util/arraybuilder.js');
 	assert.equal(111, builder.toByteBuffer()[4]);
 	assert.equal(5, builder.toByteBuffer().byteLength);
 }
+
+{
+	var builder = new ArrayBuilder(1024);
+	builder.appendText("helio");
+	assert.equal("li", builder.subString(2,2));
+}
