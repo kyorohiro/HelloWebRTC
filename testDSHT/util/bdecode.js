@@ -15,16 +15,16 @@ function Bdecode() {
 		var buffer = calcParam.builder.getArrayBuffer();
 		for(;calcParam.i<calcParam.length;calcParam.i++) {
 			switch(buffer[calcParam.i]) {
-			case 0x64:{ //d:diction
+			case 0x64:
+				//d:diction
 				return this._decodeDiction(calcParam);
-			}
-			case 0x69: { //i:number
+			case 0x69: 
+				//i:number
 				return this._decodeNumber(calcParam);
-			}
 			case 0x30:case 0x31:case 0x32:case 0x33:case 0x34:
-			case 0x35:case 0x36:case 0x37:case 0x38:case 0x39: {
+			case 0x35:case 0x36:case 0x37:case 0x38:case 0x39:
+				//0-9:text
 				return this._decodeText(calcParam);
-			}
 			}
 		}
 	};
