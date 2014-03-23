@@ -1,4 +1,5 @@
 var ArrayBuilder = require('../util/arraybuilder.js');
+var Encoder = require('../util/encoder.js');
 
 function Bdecode() {
 	this.root = {};
@@ -47,16 +48,13 @@ function Bdecode() {
 	this._decodeNumber = function(calcParam) {
 		var buffer = calcParam.builder.getArrayBuffer();
 		calcParam.i++;//i
-		var len =0;
-		var j=calcParam.i;
-		for(;j<calcParam.length;j++) {
-			if(buffer[j] ==0x3a) {
-				j++;
+		var ret = 0;
+		for(;calcParam.i<calcParam.length;calcParam.i++) {
+			if(buffer[calcParam.i] ==0x3a) {
 				break;
 			}
-			len++;
+			ret = ret*10+(buffer[calcParam.i]-48);
 		}
-		var ret = parseInt(calcParam.builder.subString(calcParam.i,len));
 		calcParam.i++;//e
 		return ret;
 	}

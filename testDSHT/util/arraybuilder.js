@@ -1,4 +1,4 @@
-function ArrayBuilder(size) {
+var ArrayBuilder = function ArrayBuilder(size) {
 	this.mBuffer = new ArrayBuffer(size);
 	this.mLength = 0;
 
@@ -63,5 +63,6 @@ function ArrayBuilder(size) {
 		return text;
 	}
 }
+
 
 try{module.exports = ArrayBuilder;}catch(e){;}
