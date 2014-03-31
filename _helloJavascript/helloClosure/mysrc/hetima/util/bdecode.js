@@ -1,9 +1,8 @@
 goog.provide('hetima.util.Bdecode');
 goog.require('hetima.util.ArrayBuilder');
-//var ArrayBuilder = require('../util/arraybuilder.js');
-//var Encoder = require('../util/encoder.js');
+goog.require('hetima.util.Encoder');
 
-function Bdecode(mode) {
+hetima.util.Bdecode = function (mode) {
 	this.mode = mode;
 	this.decodeArrayBuffer = function(builder, start, length) {
 		var calcParam = {};
@@ -72,13 +71,12 @@ function Bdecode(mode) {
 		}
 		var ret = "";
 		if(this.mode == "text") {
-			ret = Encoder.subString(buffer, calcParam.i, len);
+			ret = hetima.util.Encoder.subString(buffer, calcParam.i, len);
 		} else {
-			ret = Encoder.subBytes(buffer, calcParam.i, len);		
+			ret = hetima.util.Encoder.subBytes(buffer, calcParam.i, len);		
 		}
 		calcParam.i = calcParam.i+len;
 		return ret;
 	}
 }
 
-try{module.exports = Bdecode;}catch(e){;}

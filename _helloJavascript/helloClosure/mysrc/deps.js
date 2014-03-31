@@ -2,9 +2,9 @@
 // Please do not edit.
 goog.addDependency('../../../mysrc/hetima/util/arraybuilder.js', ['hetima.util.ArrayBuilder'], []);
 goog.addDependency('../../../mysrc/hetima/util/arraybuilder_test.js', ['hetima.util.ArrayBuilderTest'], ['goog.testing.jsunit', 'hetima.util.ArrayBuilder']);
-goog.addDependency('../../../mysrc/hetima/util/bdecode.js', ['hetima.util.Bdecode'], ['hetima.util.ArrayBuilder']);
+goog.addDependency('../../../mysrc/hetima/util/bdecode.js', ['hetima.util.Bdecode'], ['hetima.util.ArrayBuilder', 'hetima.util.Encoder']);
 goog.addDependency('../../../mysrc/hetima/util/bencode.js', ['hetima.util.Bencode'], ['hetima.util.ArrayBuilder']);
-goog.addDependency('../../../mysrc/hetima/util/bencode_test.js', ['hetima.util.BencodeTest'], ['goog.testing.jsunit']);
+goog.addDependency('../../../mysrc/hetima/util/bencode_test.js', ['hetima.util.BencodeTest'], ['goog.testing.jsunit', 'hetima.util.Bdecode', 'hetima.util.Bencode']);
 goog.addDependency('../../../mysrc/hetima/util/encoder.js', ['hetima.util.Encoder'], []);
 goog.addDependency('../../../mysrc/hetima/util/encoder_test.js', ['hetima.util.EncoderTest'], ['goog.testing.jsunit', 'hetima.util.Encoder']);
 goog.addDependency('../../../mysrc/hetima/util/uuid.js', ['hetima.util.UUID'], []);
