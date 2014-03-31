@@ -1,4 +1,4 @@
-goog.provide("hetima.util");
+goog.provide("hetima.util.UUID");
 
 hetima.util.UUID = function(){};
 hetima.util.UUID.s4 = function() {
