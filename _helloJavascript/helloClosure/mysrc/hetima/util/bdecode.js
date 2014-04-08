@@ -35,12 +35,14 @@ hetima.util.Bdecode = function (mode) {
 	var ret = {};
 	calcParam.i++;//d
 	do {
-	    if(buffer[calcParam.i] ==0x3a) {
+	    if(buffer[calcParam.i] ==0x65) {
 		calcParam.i++;//e
 		break;
 	    }
-	    ret[this._decodeArrayBuilder(calcParam)]
-		= this._decodeArrayBuilder(calcParam);
+	    var key = this._decodeArrayBuilder(calcParam);
+	    var value = this._decodeArrayBuilder(calcParam);
+//	    console.log("=="+key+","+value);
+	    ret[key] =  value;
 	} while(true);
 	return ret;
     }
@@ -50,7 +52,7 @@ hetima.util.Bdecode = function (mode) {
 	var ret = 0;
 	calcParam.i++;//i
 	for(;calcParam.i<calcParam.length;calcParam.i++) {
-	    if(buffer[calcParam.i] ==0x3a) {
+	    if(buffer[calcParam.i] ==0x65) {
 		break;
 	    }
 	    ret = ret*10+(buffer[calcParam.i]-48);
@@ -73,7 +75,7 @@ hetima.util.Bdecode = function (mode) {
 	if(this.mode == "text") {
 	    ret = hetima.util.Encoder.subString(buffer, calcParam.i, len);
 	} else {
-	    ret = hetima.util.Encoder.subBytes(buffer, calcParam.i, len);		
+	    ret = hetima.util.Encoder.subBytes(buffer, calcParam.i, len);
 	}
 	calcParam.i = calcParam.i+len;
 	return ret;
