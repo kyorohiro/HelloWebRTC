@@ -19,7 +19,7 @@ hetima.util.Bencode = function () {
 	else if( type == "[object Array]") {
 	    builder.appendText("l");
 	    for(key in _obj) {
-		this.__encode(_obj[jey],builder);
+		this.__encode(_obj[key],builder);
 	    }
 	    builder.appendText("e");
 	}

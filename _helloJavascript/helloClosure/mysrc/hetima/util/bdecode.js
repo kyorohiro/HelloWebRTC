@@ -22,6 +22,9 @@ hetima.util.Bdecode = function (mode) {
 	    case 0x69: 
 		//i:number
 		return this._decodeNumber(calcParam);
+	    case 0x6c:
+		//l:list
+		return this._decodeList(calcParam);
 	    case 0x30:case 0x31:case 0x32:case 0x33:case 0x34:
 	    case 0x35:case 0x36:case 0x37:case 0x38:case 0x39:
 		//0-9:text
@@ -30,10 +33,26 @@ hetima.util.Bdecode = function (mode) {
 	}
     };
     
+    this._decodeList = function(calcParam) {
+	var buffer = calcParam.builder.getArrayBuffer();
+	var ret = [];
+	calcParam.i++;//d
+	do {
+	    if(buffer[calcParam.i] ==0x65) {
+		calcParam.i++;//e
+		break;
+	    }
+	    var value = this._decodeArrayBuilder(calcParam);
+	    ret.push(value);
+	} while(true);
+	return ret;
+    }
+
+
     this._decodeDiction = function(calcParam) {
 	var buffer = calcParam.builder.getArrayBuffer();
 	var ret = {};
-	calcParam.i++;//d
+	calcParam.i++;//l
 	do {
 	    if(buffer[calcParam.i] ==0x65) {
 		calcParam.i++;//e
