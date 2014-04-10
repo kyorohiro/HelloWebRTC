@@ -1,5 +1,5 @@
 goog.require("goog.dom");
-goog.require("hetima.util");
+goog.require("hetima.util.UUID");
 
 function sayHi() {
     var newHeader = goog.dom.createDom("h1", {"style":"background-color:#EEE"},"Hello world!"+hetima.util.UUID.getID());
